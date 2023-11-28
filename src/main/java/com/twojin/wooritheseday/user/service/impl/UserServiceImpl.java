@@ -86,13 +86,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO updateUserImgUrl(String imgUrl , String userId) {
+    public UserDTO updateUserImgUrl(String fileName , String userId) {
         log.debug("[userService] >> updateUserImgUrl ");
 
         UserDTO userDTO = userRepository.findByUserId(userId).orElse(null);
 
         if(userDTO!=null) {
-            userDTO.setUserImgUrl(imgUrl);
+            userDTO.setUserImgUrl(fileName);
             userDTO = userRepository.save(userDTO);
         }
 

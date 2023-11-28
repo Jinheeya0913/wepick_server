@@ -5,6 +5,7 @@ import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.file.dto.ProfileImgEntity;
 import com.twojin.wooritheseday.file.repository.ProfileImgInfoRepository;
 import com.twojin.wooritheseday.file.service.FileManageService;
+import com.twojin.wooritheseday.user.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,13 +39,17 @@ public class FileManageServiceImpl implements FileManageService {
             return null;
         } else {
             log.debug("[FileManageService] >> uploadFile >> 정상");
-            log.error("[FileManageService] >> uploadFile >> getContentTyep : " + file.getContentType());
+            log.debug("[FileManageService] >> uploadFile >> getContentTyep : " + file.getContentType());
         }
 
         String originalFileName = file.getOriginalFilename();
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String folderPath = "userProfileImg";
-        String saveName = uploadPath+File.separator+ folderPath + File.separator+userId+fileExtension;
+
+        String uuid  = StringUtils.createRandomUUid();
+
+
+        String saveName = uploadPath+File.separator+ folderPath +File.separator+uuid+fileExtension;
         Path savePath = Paths.get(saveName);
 
         log.debug("[FileManageService] >> folderPath >> " + folderPath );
@@ -67,12 +72,13 @@ public class FileManageServiceImpl implements FileManageService {
             profileImgEntity = profileImgRepository.save(ProfileImgEntity.builder()
                     .userId(userId)
                     .filePath(folderPath)
-                    .userId("Y")
+                    .fileName(uuid)
+                    .useAt(true)
                     .build());
         } catch (Exception e) {
             throw new BusinessExceptionHandler(ErrorCode.USER_PROFILE_IMG_UPLOAD.getMessage(), ErrorCode.USER_PROFILE_IMG_UPLOAD);
         }
 
-        return saveName;
+        return uuid;
     }
 }

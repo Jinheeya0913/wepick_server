@@ -22,13 +22,17 @@ public class ProfileImgEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long profileImgId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     @NotBlank
     String userId;
 
     @Column(nullable = false)
     @NotBlank
     String filePath;
+
+    @Column(nullable = false)
+    @NotBlank
+    String fileName;
 
     @Convert(converter = BooleanToYNConverterUtil.class)
     boolean useAt;
@@ -40,9 +44,11 @@ public class ProfileImgEntity {
     Date updateDt;
 
     @Builder
-    public ProfileImgEntity(String userId, String filePath, boolean useAt) {
+    public ProfileImgEntity(String userId, String filePath, String fileName , boolean useAt) {
         this.userId = userId;
         this.filePath = filePath;
+        this.fileName = fileName;
         this.useAt = useAt;
+
     }
 }

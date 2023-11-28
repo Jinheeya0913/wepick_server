@@ -46,8 +46,8 @@ public class FileUserController {
         JSONObject jsonObject = new JSONObject();
 
         try {
-            String imgPath = fileManageService.uploadProfileImage(image, userId);
-            user = userService.updateUserImgUrl(imgPath, userId);
+            String fileName = fileManageService.uploadProfileImage(image, userId); // uuid 반환
+            user = userService.updateUserImgUrl(fileName, userId);
 
             if (user != null) {
                 jsonObject = ConvertModules.dtoToJsonObj(user);
