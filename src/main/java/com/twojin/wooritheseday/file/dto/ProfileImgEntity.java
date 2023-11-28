@@ -2,6 +2,8 @@ package com.twojin.wooritheseday.file.dto;
 
 
 import com.twojin.wooritheseday.common.utils.BooleanToYNConverterUtil;
+import com.twojin.wooritheseday.common.vo.FileEntity;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,39 +17,23 @@ import java.util.Date;
 @Entity
 @Table(name ="woori_profile_img")
 @Data
-@NoArgsConstructor
-public class ProfileImgEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Long profileImgId;
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ProfileImgEntity extends FileEntity {
 
     @Column(nullable = false)
     @NotBlank
-    String userId;
-
-    @Column(nullable = false)
-    @NotBlank
-    String filePath;
-
-    @Column(nullable = false)
-    @NotBlank
-    String fileName;
+    protected  String userId;
 
     @Convert(converter = BooleanToYNConverterUtil.class)
-    boolean useAt;
+    protected boolean useAt;
 
-    @CreationTimestamp
-    Date createDt;
-
-    @UpdateTimestamp
-    Date updateDt;
 
     @Builder
-    public ProfileImgEntity(String userId, String filePath, String fileName , boolean useAt) {
+    public ProfileImgEntity(String userId, String filePath, String fileName , String fileExtension, boolean useAt) {
         this.userId = userId;
-        this.filePath = filePath;
-        this.fileName = fileName;
+        super.filePath = filePath;
+        super.fileName = fileName;
+        this.fileExtension = fileExtension;
         this.useAt = useAt;
 
     }

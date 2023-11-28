@@ -7,7 +7,7 @@ import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.file.service.FileManageService;
+import com.twojin.wooritheseday.file.service.FileUserService;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUserController {
 
     @Autowired
-    FileManageService fileManageService;
+    FileUserService fileUserService;
 
     @Autowired
     UserService userService;
@@ -46,7 +46,7 @@ public class FileUserController {
         JSONObject jsonObject = new JSONObject();
 
         try {
-            String fileName = fileManageService.uploadProfileImage(image, userId); // uuid 반환
+            String fileName = fileUserService.uploadProfileImage(image, userId); // uuid 반환
             user = userService.updateUserImgUrl(fileName, userId);
 
             if (user != null) {
@@ -82,17 +82,17 @@ public class FileUserController {
     public ResponseEntity<ApiResponse> getProfileImage(@RequestHeader(AuthConstants.ACCESS_HEADER) String accessTokenHeader) {
         ApiResponse apiResponse = null;
         UserDTO userDTO = null;
+        String fileName = "";
 
         String userId = TokenUtil.getUserIdFromHeader(accessTokenHeader);
 
         try {
             userDTO = userService.loadMyAccountByUserId(userId);
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(userDTO));
+            fileName = userDTO.getUserImgUrl();
+            fileUserService.downloadProfileImage(fileName);
 
-            if (userDTO != null) {
-                apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(userDTO));
-            } else {
-                throw new BusinessExceptionHandler(ErrorCode.USER_NOT_FOUND.getMessage(), ErrorCode.USER_NOT_FOUND);
-            }
+
         } catch (BusinessExceptionHandler e) {
             apiResponse = ApiResponse.builder()
                     .resultMsg(e.getMessage())

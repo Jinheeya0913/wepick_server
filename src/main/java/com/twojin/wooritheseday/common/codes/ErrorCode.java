@@ -23,6 +23,7 @@ public enum ErrorCode {
      */
 
     USER_PROFILE_IMG_UPLOAD(200, "F001", "이미지 저장에 실패하였습니다."),
+    USER_PROFILE_IMG_DOWNLOAD(200, "F002", "이미지 불러오기에 실패하였습니다."),
 
 
     /**

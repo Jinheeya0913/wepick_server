@@ -3,7 +3,7 @@ package com.twojin.wooritheseday.user.controller;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
-import com.twojin.wooritheseday.file.service.FileManageService;
+import com.twojin.wooritheseday.file.service.FileUserService;
 import com.twojin.wooritheseday.auth.service.TokenService;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
@@ -17,7 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -33,7 +32,7 @@ public class UserController {
     TokenService tokenService;
 
     @Autowired
-    FileManageService fileManageService;
+    FileUserService fileUserService;
 
     @RequestMapping("/login")
     public ResponseEntity<ApiResponse> login(@RequestBody @Valid  UserDTO userDTO) {

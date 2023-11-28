@@ -1,10 +1,11 @@
 package com.twojin.wooritheseday.file.service.impl;
 
 import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.utils.FileUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.file.dto.ProfileImgEntity;
 import com.twojin.wooritheseday.file.repository.ProfileImgInfoRepository;
-import com.twojin.wooritheseday.file.service.FileManageService;
+import com.twojin.wooritheseday.file.service.FileUserService;
 import com.twojin.wooritheseday.user.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Service("fileManageService")
+@Service("fileUserService")
 @Slf4j
-public class FileManageServiceImpl implements FileManageService {
+public class FileUserServiceImpl implements FileUserService {
 
     @Autowired
     ProfileImgInfoRepository profileImgRepository;
@@ -73,6 +74,7 @@ public class FileManageServiceImpl implements FileManageService {
                     .userId(userId)
                     .filePath(folderPath)
                     .fileName(uuid)
+                    .fileExtension(fileExtension)
                     .useAt(true)
                     .build());
         } catch (Exception e) {
@@ -80,5 +82,16 @@ public class FileManageServiceImpl implements FileManageService {
         }
 
         return uuid;
+    }
+
+    @Override
+    public void downloadProfileImage(String fileName) {
+        ProfileImgEntity imgEntity = profileImgRepository.findByFileName(fileName)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.USER_PROFILE_IMG_DOWNLOAD.getMessage(), ErrorCode.USER_PROFILE_IMG_DOWNLOAD));
+
+        String filePath = imgEntity.getFilePath();
+
+
+
     }
 }
