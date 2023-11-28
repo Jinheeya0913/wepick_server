@@ -44,7 +44,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 "/testLogin/join",
                 "/auth/validToken",
                 "/auth/login"
-
         );
 
         String requestUri = request.getRequestURI();
@@ -107,14 +106,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             ApiResponse apiResponse = buildErrorResponse(e);
 
             JSONObject jsonObject = ConvertModules.dtoToJsonObj(apiResponse);
-            jsonObject.put("status", "401");
-
+            jsonObject.put("status", apiResponse.getResultCode());
             printWriter.print(jsonObject);
             printWriter.flush();
             printWriter.close();
+
+            return;
         }
 
+
         log.debug("JwtAuthorizationFilter :: 검증성공");
+
+
         filterChain.doFilter(request, response);
         return;
     }
@@ -160,6 +163,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private ApiResponse buildErrorResponse(Exception e) {
 
         String resultMsg = "";
+        String divisionCode = "";
+        String errorCode = "401";
+
         // JWT 토큰 만료
         if (e instanceof ExpiredJwtException) {
             resultMsg = "TOKEN Expired";
@@ -171,6 +177,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // JWT 토큰내에서 오류 발생 시
         else if (e instanceof JwtException) {
             resultMsg = "TOKEN Parsing JwtException";
+        } else if (e instanceof BusinessExceptionHandler) {
+            resultMsg = "OTHER TOKEN ERROR";
+            divisionCode = ((BusinessExceptionHandler) e).getErrorCode().getDivisionCode();
+
+            errorCode = Integer.toString(
+                    ((BusinessExceptionHandler) e).getErrorCode().getStatus()
+            );
         }
         // 이외 JTW 토큰내에서 오류 발생
         else {
@@ -179,11 +192,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         ApiResponse apiResponse =  ApiResponse.builder()
                 .result(e.getMessage())
-                    .resultCode("101")
+                .resultCode(errorCode)
                 .resultMsg(e.getMessage())
                 .build();
-
-
+        if (!divisionCode.equals("")) {
+            apiResponse.setResult(apiResponse.getResult() + ":" + divisionCode);
+        }
 
         return apiResponse;
     }

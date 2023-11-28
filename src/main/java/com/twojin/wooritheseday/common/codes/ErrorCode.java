@@ -29,7 +29,8 @@ public enum ErrorCode {
      * Token Error List
      */
 
-    Expired_Token(200, "T001", "만료된 세션입니다. 다시 로그인 해주세요"),
+    Expired_Token(200, "T001", "만료된 토큰입니다. 토큰 재발급이 필요합니다"),
+    Expired_Token_Need_Login(200, "T002", "만료된 토큰입니다. 다시 로그인 해주세요"),
 
     /**
      * Partner Error

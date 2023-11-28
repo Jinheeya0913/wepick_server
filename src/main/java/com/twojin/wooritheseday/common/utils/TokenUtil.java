@@ -73,7 +73,7 @@ public class TokenUtil {
         }
 
         /**
-         * 유효한 토큰인지 확인 해주는 메서드
+         * 유효한 토큰인지 확인 해주는 메서드 with Exception
          *
          * @param token String  : 토큰
          * @return boolean      : 유효한지 여부 반환
@@ -98,6 +98,27 @@ public class TokenUtil {
                 return false;
             }
         }
+
+    public static boolean isValidTokenWithOutException(String token) {
+        try {
+            Claims claims = getClaimsFormToken(token);
+
+            log.info("expireTime :" + claims.getExpiration());
+            log.info("userId :" + claims.get("userId"));
+            log.info("userNm :" + claims.get("userNm"));
+
+            return true;
+        } catch (ExpiredJwtException exception) {
+            log.error("Token Expired");
+            return false;
+        } catch (JwtException exception) {
+            log.error("Token Tampered");
+            return false;
+        } catch (NullPointerException exception) {
+            log.error("Token is null");
+            return false;
+        }
+    }
 
         /**
          * Header 내에 토큰을 추출합니다.

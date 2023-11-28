@@ -1,19 +1,17 @@
 package com.twojin.wooritheseday.auth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.auth.service.TokenService;
+import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +42,20 @@ public class AuthController {
     UserService userService;
 
 
+    /**
+     *
+     * @param accessHeader
+     * @param refreshHeader
+     *
+     *  @return Header  >> accessToken, refreshHeader
+     *  @return Body    >> ApiResonse : 유저 정보를 담고 있는 ApiResponse 반환
+     *
+     * {@code @Description} :
+     *
+     *
+     * @throws URISyntaxException
+     * @throws JsonProcessingException
+     */
     @RequestMapping("/validToken")
     public ResponseEntity<ApiResponse> validAuth(@RequestHeader(ACCESS_HEADER) String accessHeader,
                                             @RequestHeader(REFRESH_HEADER) String refreshHeader) throws URISyntaxException, JsonProcessingException {
@@ -52,17 +64,14 @@ public class AuthController {
         String refreshToken = "";
         String userId = "";
         UserDTO user = null;
-        String userJsonString = "";
-
-
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = new JSONObject();
         ApiResponse apiResponse = null;
 
-
         try {
+
+            // 1. 빈값 체크
 
             if (!"".equals(accessHeader)) {
                 accessToken = TokenUtil.getTokenFromHeader(accessHeader);
@@ -76,41 +85,46 @@ public class AuthController {
                 throw new BusinessExceptionHandler(ErrorCode.Expired_Token.getMessage(), ErrorCode.Expired_Token);
             }
 
-            if (TokenUtil.isValidToken(accessToken)) {
-                log.debug("validToken :: valid RefreshToken");
-                if (!TokenUtil.isValidToken(refreshToken)) {
-                    throw new BusinessExceptionHandler(ErrorCode.Expired_Token.getMessage(), ErrorCode.Expired_Token);
-                    // Todo RefreshToken 만료 시에는 로그인 화면으로
+            // 2. 유효 토큰 검증
+
+
+            log.debug("validToken :: validAccess Start ");
+
+            boolean validAccess = TokenUtil.isValidTokenWithOutException(accessToken) ;
+            boolean validRefresh = TokenUtil.isValidTokenWithOutException(refreshToken) ;
+
+            if (validAccess) { // accessToken이 유효
+                log.debug("validToken :: accessToken : true ");
+
+                if (!validRefresh) { // refreshToken 유효하지 않음
+                    // accessToken o & refreshToken x => 재로그인
+                    log.debug("validToken >> validAccess >> ReLogin");
+                    throw new BusinessExceptionHandler(ErrorCode.Expired_Token_Need_Login.getMessage(), ErrorCode.Expired_Token);
                 } else {
-                    log.debug("validAccessToken :: Create New AccessToken");
-                    // Todo RefreshToken 유효 시에는 accessToken 재발급
+                    log.debug("validAccessToken :: Valid Pass All");
+                }
+
+            } else {
+                log.debug("validToken :: accessToken : false");
+
+                if (!validRefresh) {
+                    // accessToken x & refreshToken x => 재로그인
+                    log.debug("validToken >> validRefresh >> ReLogin");
+                    throw new BusinessExceptionHandler(ErrorCode.Expired_Token_Need_Login.getMessage(), ErrorCode.Expired_Token);
+                } else {
+                    log.debug("validToken >> validRefresh >> new AccessToken");
+                    // accessToken x & refreshToken o => accessToken 재발급
                     userId = TokenUtil.getUserIdFromToken(refreshToken);
                     user = userService.loadMyAccountByUserId(userId);
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    userJsonString = objectMapper.writeValueAsString(
-                            UserDTO.builder()
-                                    .userNm(user.getUserNm())
-                                    .userId(user.getUserId())
-//                                .userAddress(user.getUserAddress())
-                                    .userEmail(user.getUserEmail())
-                                    .userPhoneNum(user.getUserPhoneNum())
-                                    .build()
-                    );
-
-                    try {
-                        jsonObject = (JSONObject) jsonParser.parse(userJsonString);
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
                     accessToken = TokenUtil.generateAccessJwtToken(user);
                 }
-            } else {
-                throw new BusinessExceptionHandler(ErrorCode.Expired_Token.getMessage(), ErrorCode.Expired_Token);
             }
 
+            jsonObject = getUserDataFromToken(accessToken);
             apiResponse = ApiResponse.createSuccessApiResponseWithObj(jsonObject);
 
         } catch (BusinessExceptionHandler e) {
+            log.error("[validToken] >> catch :: 에러 발생" );
             apiResponse = ApiResponse.builder()
                     .result("FAIL")
                     .resultCode(Integer.toString(e.getErrorCode().getStatus()))
@@ -166,6 +180,14 @@ public class AuthController {
         return ResponseEntity.ok().body(
                 ApiResponse.createSuccessApiResponseAuto()
         );
+    }
+
+    private JSONObject getUserDataFromToken(String token) {
+        String userIdFromToken = TokenUtil.getUserIdFromToken(token);
+        UserDTO userDTO = userService.loadMyAccountByUserId(userIdFromToken);
+        JSONObject jsonObject = ConvertModules.dtoToJsonObj(userDTO);
+
+        return jsonObject;
     }
 
 
