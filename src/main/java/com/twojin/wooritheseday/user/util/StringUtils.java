@@ -1,8 +1,9 @@
 package com.twojin.wooritheseday.user.util;
 
 import java.util.Random;
+import java.util.UUID;
 
-public class CustomStringUtils {
+public class StringUtils {
 
     public static String createRandomString() {
         int randomStrLen = 16;
@@ -24,4 +25,10 @@ public class CustomStringUtils {
         String randomStr = ramdomBuf.toString();
         return randomStr;
     }
+
+    public static String createRandomUUid() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
+
 }
