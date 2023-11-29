@@ -74,6 +74,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO loadMyAccountByUserId(String userId) {
+        log.debug("[loadMyAccountByUserId] >> ID로 계정 조회");
         UserDTO result = userRepository.findByUserId(userId)
                 .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.USER_NOT_FOUND.getMessage(), ErrorCode.USER_NOT_FOUND));
         return result;
