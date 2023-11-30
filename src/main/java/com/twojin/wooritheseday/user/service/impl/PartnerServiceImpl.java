@@ -2,9 +2,11 @@ package com.twojin.wooritheseday.user.service.impl;
 
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
+import com.twojin.wooritheseday.user.entity.PartnerDTO;
 import com.twojin.wooritheseday.user.entity.PartnerQueueDTO;
 import com.twojin.wooritheseday.user.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.user.entity.UserDTO;
+import com.twojin.wooritheseday.user.repository.PartnerDtoRepository;
 import com.twojin.wooritheseday.user.repository.PartnerQueRepository;
 import com.twojin.wooritheseday.user.repository.PartnerReqQueueRepository;
 import com.twojin.wooritheseday.user.repository.UserRepository;
@@ -27,7 +29,16 @@ public class PartnerServiceImpl implements PartnerService {
     PartnerReqQueueRepository partnerReqQueueRepository;
 
     @Autowired
+    PartnerDtoRepository partnerDtoRepository;
+
+    @Autowired
     UserRepository userRepository;
+
+    @Override
+    public PartnerDTO getPartnerInfoByUserId(String userId) {
+        PartnerDTO partnerDTO = partnerDtoRepository.findByPartnerUser1OrPartnerUser2(userId, userId).orElse(null);
+        return partnerDTO;
+    }
 
     // Todo : Partner 4. ptcd로 파트너 조회하기
     @Override

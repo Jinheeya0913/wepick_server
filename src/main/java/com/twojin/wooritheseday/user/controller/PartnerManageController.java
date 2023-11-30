@@ -9,10 +9,12 @@ import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
+import com.twojin.wooritheseday.user.entity.PartnerDTO;
 import com.twojin.wooritheseday.user.entity.PartnerQueueDTO;
 import com.twojin.wooritheseday.user.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.user.service.PartnerService;
+import com.twojin.wooritheseday.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,7 +32,33 @@ public class PartnerManageController {
     @Autowired
     PartnerService partnerService;
 
+    @Autowired
+    UserService userService;
 
+    // Todo : 내 파트너 유무 조회
+    @RequestMapping("/getMyPartner")
+    public ResponseEntity<ApiResponse> getMyPartnerInfo(@RequestHeader(AuthConstants.ACCESS_HEADER) String accessHeader) {
+        ApiResponse apiResponse = null;
+        UserDTO user = null;
+        PartnerDTO partner = null;
+
+        // 1. 우선 내 정보 조회
+        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
+
+        try {
+            partner= partnerService.getPartnerInfoByUserId(userId);
+
+            if (partner != null) { // 조회 결과 있음
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(partner));
+            } else { // 조회 결과 없음
+                throw new BusinessExceptionHandler(ErrorCode.PARTNER_NOT_EXIST.getMessage(), ErrorCode.PARTNER_NOT_EXIST);
+            }
+        } catch (Exception e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        }
+
+        return ResponseEntity.ok().body(apiResponse);
+    }
     // Todo : Partner 1. 내 파트너 코드 갖기
     @RequestMapping("/getMySearchCode")
     public ResponseEntity<ApiResponse> getMySearchCode(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader) {

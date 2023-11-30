@@ -39,10 +39,10 @@ public enum ErrorCode {
      * Partner Error
      */
 
+    PARTNER_NOT_EXIST(200,"P001", "등록된 파트너가 없습니다"),
     PARTNER_REGIST_QUEUE_FAIL(200,"P001", "등록 실패하였습니다"),
     PARTNER_REGIST_NON_EXIST(200,"P001", "등록돼 있지 않은 코드입니다"),
     PARTNER_REGIST_CANT_USE(200,"P001", "사용 불가능한 코드입니다"),
-
     PARTNER_REGIST_NOT_FOUND(200,"P001", "조회되지 않는 파트너입니다."),
 
     /**
