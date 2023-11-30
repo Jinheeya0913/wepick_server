@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
 @Setter
 public class ApiResponse{
 
-    // API 응답 결과 Response
+    // API 응답 결과 Response, divisionCode
     private String result;
 
     // API 응답 코드 Response
@@ -30,7 +30,8 @@ public class ApiResponse{
         this.resultData = resultData;
     }
 
-    public ApiResponse(final String  result, final String resultCode, final String resultMsg) {
+    @Builder
+    public ApiResponse( String  result,  String resultCode,  String resultMsg) {
         this.result = result;
         this.resultCode = resultCode;
         this.resultMsg = resultMsg;
@@ -58,7 +59,7 @@ public class ApiResponse{
 
         if (e instanceof BusinessExceptionHandler) {
             return ApiResponse.builder()
-                    .result("FAIL")
+                    .result("FAIL:" + ((BusinessExceptionHandler) e).getErrorCode().getDivisionCode()) // : 뒤에 divisionCode
                     .resultCode(Integer.toString(((BusinessExceptionHandler) e).getErrorCode().getStatus()))
                     .resultMsg(e.getMessage())
                     .build();
