@@ -20,7 +20,7 @@ import java.util.Date;
     }
 )
 @Data
-public class PartnerDTO {
+public class PartnerMaterDTO {
 
     // 파트너 Cd
     @Id

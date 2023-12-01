@@ -2,8 +2,8 @@ package com.twojin.wooritheseday.user.service.impl;
 
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.user.entity.PartnerDTO;
-import com.twojin.wooritheseday.user.entity.PartnerQueueDTO;
+import com.twojin.wooritheseday.user.entity.PartnerMaterDTO;
+import com.twojin.wooritheseday.user.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.user.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.user.repository.PartnerDtoRepository;
@@ -35,24 +35,27 @@ public class PartnerServiceImpl implements PartnerService {
     UserRepository userRepository;
 
     @Override
-    public PartnerDTO getPartnerInfoByUserId(String userId) {
-        PartnerDTO partnerDTO = partnerDtoRepository.findByPartnerUser1OrPartnerUser2(userId, userId).orElse(null);
-        return partnerDTO;
+    public PartnerMaterDTO getPartnerInfoByUserId(String userId) {
+        PartnerMaterDTO partnerMaterDTO = partnerDtoRepository.findByPartnerUser1OrPartnerUser2(userId, userId).orElse(null);
+        return partnerMaterDTO;
     }
 
     // Todo : Partner 4. ptcd로 파트너 조회하기
     @Override
     public UserDTO selectPartnerQueueWithPtRegCd(String ptRegCd) {
-        PartnerQueueDTO partnerQueueDTO = partnerQueRepository.findByPtRegCd(ptRegCd)
+        PartnerTempQueDTO partnerTempQueDTO = partnerQueRepository.findByPtTempRegCd(ptRegCd)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_NON_EXIST.getMessage(), ErrorCode.PARTNER_REGIST_NON_EXIST));
         UserDTO userDTO = null;
 
-        log.debug("selectPartnerQueueWithRegCd :: partnerQueueDTO :: " + partnerQueueDTO.toString());
+        log.debug("selectPartnerQueueWithRegCd :: partnerQueueDTO :: " + partnerTempQueDTO.toString());
 
-        if (!"Q".equals(partnerQueueDTO.getPtStatus())) {
+        if (
+//                !"Q".equals(partnerTempQueDTO.getPtTempStatus()) 임시 처리
+                true
+        ) {
             throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_CANT_USE.getMessage(), ErrorCode.PARTNER_REGIST_CANT_USE);
         } else {
-            userDTO = userRepository.findByUserId(partnerQueueDTO.getPtRegUserId())
+            userDTO = userRepository.findByUserId(partnerTempQueDTO.getPtTempUserId())
                     .orElseThrow(
                             () -> new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_NOT_FOUND.getMessage(), ErrorCode.PARTNER_REGIST_NOT_FOUND)
                     );
@@ -64,20 +67,26 @@ public class PartnerServiceImpl implements PartnerService {
 
     @Override
     @Transactional
-    public PartnerQueueDTO registPartnerQueue(String userId) {
+    public PartnerTempQueDTO registPartnerQueue(String userId) {
         // Todo : Partner 2. 생성하기
         String randomStr = PartnerUtils.createPartnerQueueCode();
-        PartnerQueueDTO partnerQueueDTO = partnerQueRepository
-                .findByPtRegUserId(userId)
+
+        PartnerTempQueDTO partnerTempQueDTO = partnerQueRepository
+                .findByPtTempUserId(userId)
                 .orElse(
-                        PartnerQueueDTO.builder()
+                        PartnerTempQueDTO.builder()
                                 .pt_register_userId(userId)
                                 .build()
                 );
+        PartnerTempQueDTO resultPartnerQueue = null;
 
-        partnerQueueDTO.setPtRegCd(randomStr);
+        partnerTempQueDTO.setPtTempRegCd(randomStr);
+        try {
+            resultPartnerQueue = partnerQueRepository.save(partnerTempQueDTO);
+        } catch (Exception e) {
+            throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_QUEUE_FAIL.getMessage(), ErrorCode.PARTNER_REGIST_QUEUE_FAIL);
+        }
 
-        PartnerQueueDTO resultPartnerQueue = partnerQueRepository.save(partnerQueueDTO);
         return resultPartnerQueue;
     }
 
