@@ -100,6 +100,14 @@ public class UserServiceImpl implements UserService {
         return userDTO;
     }
 
+    @Override
+    public UserDTO selectUserByUserId(String userId) {
+        log.debug("[selectUserByUserId] >> ID로 계정 조회");
+        UserDTO result = userRepository.findByUserId(userId)
+                .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.USER_NOT_SELECTED.getMessage(), ErrorCode.USER_NOT_SELECTED));
+        return result;
+    }
+
     public String getEncodedPassword(String userPw) {
         return new String(Base64Utils.encode(userPw.getBytes()));
     }

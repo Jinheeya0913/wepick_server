@@ -1,6 +1,6 @@
-package com.twojin.wooritheseday.user.repository;
+package com.twojin.wooritheseday.partner.repository;
 
-import com.twojin.wooritheseday.user.entity.PartnerTempQueDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

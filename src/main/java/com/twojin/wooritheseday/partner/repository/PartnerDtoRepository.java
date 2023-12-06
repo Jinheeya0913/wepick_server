@@ -1,6 +1,6 @@
-package com.twojin.wooritheseday.user.repository;
+package com.twojin.wooritheseday.partner.repository;
 
-import com.twojin.wooritheseday.user.entity.PartnerMaterDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,5 @@
-package com.twojin.wooritheseday.user.util;
+package com.twojin.wooritheseday.partner.util;
+import com.twojin.wooritheseday.user.util.StringUtils;
 
 public class PartnerUtils {
 

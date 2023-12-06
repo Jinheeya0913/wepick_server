@@ -14,6 +14,8 @@ public interface UserService  {
 
     UserDTO loadMyAccountByUserId(String userId);
 
+    UserDTO selectUserByUserId(String userId);
+
     boolean agreeUserInfo(UserDTO userDTO);
 
     UserDTO updateUserImgUrl(String imgUrl, String userId);

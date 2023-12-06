@@ -1,4 +1,4 @@
-package com.twojin.wooritheseday.user.entity;
+package com.twojin.wooritheseday.partner.entity;
 
 import com.twojin.wooritheseday.common.utils.BooleanToYNConverterUtil;
 import lombok.Data;

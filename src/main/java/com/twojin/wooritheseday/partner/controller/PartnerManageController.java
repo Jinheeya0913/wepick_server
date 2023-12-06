@@ -1,26 +1,28 @@
-package com.twojin.wooritheseday.user.controller;
+package com.twojin.wooritheseday.partner.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.user.entity.PartnerMaterDTO;
-import com.twojin.wooritheseday.user.entity.PartnerTempQueDTO;
-import com.twojin.wooritheseday.user.entity.PartnerRequestQueueDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
+import com.twojin.wooritheseday.partner.util.PartnerUtils;
 import com.twojin.wooritheseday.user.entity.UserDTO;
-import com.twojin.wooritheseday.user.service.PartnerService;
+import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RequestMapping("/partner")
 @Controller
@@ -62,7 +64,8 @@ public class PartnerManageController {
         log.debug("[getMyPartnerInfo] >> 조회 성공");
         return ResponseEntity.ok().body(apiResponse);
     }
-    // Todo : Partner 1. 내 파트너 코드 갖기
+
+    // Todo : Partner 1. 파트너
     @RequestMapping("/getMyPartnerRegCode")
     public ResponseEntity<ApiResponse> getMySearchCode(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader) {
         JSONObject resultObj = new JSONObject();
@@ -71,7 +74,7 @@ public class PartnerManageController {
         String userIdFromHeader = TokenUtil.getUserIdFromHeader(accessHeader);
 
         try {
-            PartnerTempQueDTO partnerTempQueDTO = partnerService.registPartnerQueue(userIdFromHeader);
+            PartnerTempQueDTO partnerTempQueDTO = partnerService.createPartnerRegCd(userIdFromHeader);
             if (partnerTempQueDTO == null) {
                 throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_QUEUE_FAIL.getMessage(), ErrorCode.PARTNER_REGIST_QUEUE_FAIL);
             }
@@ -85,21 +88,57 @@ public class PartnerManageController {
 
     // Todo : 파트너 찾기
     @RequestMapping("/searchPartnerWithCode")
-    public ResponseEntity<ApiResponse> searchPartnerWithCode(@RequestBody PartnerTempQueDTO partner) throws ParseException, JsonProcessingException {
-        String ptRegCd= partner.getPtTempRegCd();
-        JSONObject result = new JSONObject();
+    public ResponseEntity<ApiResponse> searchPartnerWithCode(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
+                                                             @RequestBody PartnerTempQueDTO partner) {
+        log.debug("[searchPartnerWithCode] >> START");
 
-        if (ptRegCd != null) {
-            log.debug("searchPartnerWithCode >> ptRegCd >> " + ptRegCd);
-            UserDTO userDTO = partnerService.selectPartnerQueueWithPtRegCd(ptRegCd);
-            log.debug("searchPartnerWithCode >> userDTO >> " + userDTO.toString());
-            result = ConvertModules.dtoToJsonObj(userDTO);
-        } else {
-            throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_NOT_FOUND.getMessage(), ErrorCode.PARTNER_REGIST_NOT_FOUND);
+        String ptRegCd= partner.getPtTempRegCd();
+        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
+
+        log.debug("[searchPartnerWithCode] >> ptRegCd :: " + ptRegCd);
+        log.debug("[searchPartnerWithCode] >> userId  :: " + userId);
+
+        ApiResponse apiResponse = null;
+        JSONObject result = new JSONObject();
+        try {
+            if (ptRegCd != null) {
+
+                // 1. 생성 번호로 유저 정보 찾기
+                log.debug("searchPartnerWithCode >> ptRegCd >> " + ptRegCd);
+                PartnerTempQueDTO tempQue = partnerService.selectPartnerQueueWithPtRegCd(ptRegCd);
+                log.debug("searchPartnerWithCode >> PartnerTempQueDTO >> " + tempQue.toString());
+
+                String selectedUserId = tempQue.getPtTempUserId();
+
+
+                // 2, 자기 자신의 파트너 요청 코드를 입력할 경우
+                if (selectedUserId.equals(userId)) {
+                    throw new BusinessExceptionHandler(ErrorCode.PARTNER_SELF.getMessage(), ErrorCode.PARTNER_SELF);
+                }
+
+                UserDTO partnerInfo = userService.selectUserByUserId(selectedUserId);
+
+                // 3. 검색한 파트너에 대한 요청 상황 검색
+                PartnerRequestQueueDTO reqQue=partnerService.selectRequestStatusWithRequesterId(tempQue, userId);
+
+                Map<String, Object> resultMap = new HashMap<>();
+
+                resultMap.put("partnerInfo", partnerInfo); // 파트너 정보
+                resultMap.put("reqQueInfo", reqQue); // 요청 상황
+
+                result = ConvertModules.dtoToJsonObj(resultMap);
+
+
+            } else {
+                throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_NOT_FOUND.getMessage(), ErrorCode.PARTNER_REGIST_NOT_FOUND);
+            }
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(result);
+
+        } catch (Exception e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
         }
 
-
-        return ResponseEntity.ok().body(new ApiResponse("SUCCESS" , "101", "파트너 조회 완료", result));
+        return ResponseEntity.ok().body(apiResponse);
     }
 
     // Todo : 파트너 요청 보내기
@@ -111,15 +150,15 @@ public class PartnerManageController {
         JSONObject result1;
 
 
-        UserDTO partner =partnerService.selectPartnerQueueWithPtRegCd(ptRegCd);
+//        UserDTO partner =partnerService.selectPartnerQueueWithPtRegCd(ptRegCd);
 
-        dto.setPtRegUserId(partner.getUserId());
-        PartnerRequestQueueDTO res = partnerService.requestPartner(dto);
-
-        if (res != null) {
-            result = ConvertModules.dtoToJsonObj(res);
-        }
-        return ResponseEntity.ok().body(ApiResponse.createSuccessApiResponseWithObj(result));
+//        dto.setPtRegUserId(partner.getUserId());
+//        PartnerRequestQueueDTO res = partnerService.requestPartner(dto);
+//
+//        if (res != null) {
+//            result = ConvertModules.dtoToJsonObj(res);
+//        }
+        return ResponseEntity.ok().body(ApiResponse.createSuccessApiResponseWithObj(null));
     }
 
 

@@ -15,8 +15,9 @@ public enum ErrorCode {
     /** Custom Login Error List */
 
     USER_NOT_FOUND(200, "B001", "로그인을 실패했습니다. 아이디와 비밀번호를 확인해주세요."),
-
     USER_PASSWORD_NOT_CORRECT(200, "B002", "비밀번호가 일치하지 않습니다. 다시 입력해주시기 바랍니다."),
+
+    USER_NOT_SELECTED(200, "B003", "사용자 검색에 실패하였습니다."),
 
     /**
      *  File Error
@@ -40,10 +41,14 @@ public enum ErrorCode {
      */
 
     PARTNER_NOT_EXIST(200,"P001", "등록된 파트너가 없습니다"),
+
+    PARTNER_SELF(200,"P002", "다른 사용자의 코드를 입력해주시길 바랍니다."),
     PARTNER_REGIST_QUEUE_FAIL(200,"P001", "등록 실패하였습니다"),
     PARTNER_REGIST_NON_EXIST(200,"P001", "등록돼 있지 않은 코드입니다"),
     PARTNER_REGIST_CANT_USE(200,"P001", "사용 불가능한 코드입니다"),
     PARTNER_REGIST_NOT_FOUND(200,"P001", "조회되지 않는 파트너입니다."),
+
+
 
     /**
      * * HTTP Status Code

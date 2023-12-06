@@ -1,17 +1,17 @@
-package com.twojin.wooritheseday.user.service.impl;
+package com.twojin.wooritheseday.partner.service.impl;
 
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.user.entity.PartnerMaterDTO;
-import com.twojin.wooritheseday.user.entity.PartnerTempQueDTO;
-import com.twojin.wooritheseday.user.entity.PartnerRequestQueueDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.user.entity.UserDTO;
-import com.twojin.wooritheseday.user.repository.PartnerDtoRepository;
-import com.twojin.wooritheseday.user.repository.PartnerQueRepository;
-import com.twojin.wooritheseday.user.repository.PartnerReqQueueRepository;
+import com.twojin.wooritheseday.partner.repository.PartnerDtoRepository;
+import com.twojin.wooritheseday.partner.repository.PartnerQueRepository;
+import com.twojin.wooritheseday.partner.repository.PartnerReqQueueRepository;
 import com.twojin.wooritheseday.user.repository.UserRepository;
-import com.twojin.wooritheseday.user.service.PartnerService;
-import com.twojin.wooritheseday.user.util.PartnerUtils;
+import com.twojin.wooritheseday.partner.service.PartnerService;
+import com.twojin.wooritheseday.partner.util.PartnerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,46 +34,47 @@ public class PartnerServiceImpl implements PartnerService {
     @Autowired
     UserRepository userRepository;
 
+
     @Override
     public PartnerMaterDTO getPartnerInfoByUserId(String userId) {
         PartnerMaterDTO partnerMaterDTO = partnerDtoRepository.findByPartnerUser1OrPartnerUser2(userId, userId).orElse(null);
         return partnerMaterDTO;
     }
 
-    // Todo : Partner 4. ptcd로 파트너 조회하기
+    // 2. 생성코드로 파트너 찾기
     @Override
-    public UserDTO selectPartnerQueueWithPtRegCd(String ptRegCd) {
+    public PartnerTempQueDTO selectPartnerQueueWithPtRegCd(String ptRegCd) {
+        log.debug("[partnerService] >> selectPartnerQueueWithPtRegCd :: 시작");
+        log.debug("[partnerService] >> selectPartnerQueueWithPtRegCd :: ptRegCd : " + ptRegCd);
+
+
         PartnerTempQueDTO partnerTempQueDTO = partnerQueRepository.findByPtTempRegCd(ptRegCd)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_NON_EXIST.getMessage(), ErrorCode.PARTNER_REGIST_NON_EXIST));
-        UserDTO userDTO = null;
 
-        log.debug("selectPartnerQueueWithRegCd :: partnerQueueDTO :: " + partnerTempQueDTO.toString());
+        log.debug("[partnerService] >> selectPartnerQueueWithPtRegCd :: partnerTempQueDTO  " + partnerTempQueDTO.toString());
 
-        if (
-//                !"Q".equals(partnerTempQueDTO.getPtTempStatus()) 임시 처리
-                true
-        ) {
-            throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_CANT_USE.getMessage(), ErrorCode.PARTNER_REGIST_CANT_USE);
-        } else {
-            userDTO = userRepository.findByUserId(partnerTempQueDTO.getPtTempUserId())
-                    .orElseThrow(
-                            () -> new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_NOT_FOUND.getMessage(), ErrorCode.PARTNER_REGIST_NOT_FOUND)
-                    );
-            log.debug("selectPartnerQueueWithRegCd :: userDTO :: " + userDTO.toString());
-        }
 
-        return userDTO;
+        return partnerTempQueDTO;
+    }
+
+    @Override
+    public PartnerRequestQueueDTO selectRequestStatusWithRequesterId(PartnerTempQueDTO tempQue, String requesterId) {
+        String tempUserId = tempQue.getPtTempUserId();
+        PartnerRequestQueueDTO reqQue= partnerReqQueueRepository.findByPtRequesterIdAndPtAcceptorId(requesterId, tempUserId).orElse(null);
+
+        return reqQue;
     }
 
     @Override
     @Transactional
-    public PartnerTempQueDTO registPartnerQueue(String userId) {
+    public PartnerTempQueDTO createPartnerRegCd(String userId) {
         // Todo : Partner 2. 생성하기
         String randomStr = PartnerUtils.createPartnerQueueCode();
 
         PartnerTempQueDTO partnerTempQueDTO = partnerQueRepository
                 .findByPtTempUserId(userId)
                 .orElse(
+                        // 없을 경우 새로 만들어주고 랜덤키를 새로 부여
                         PartnerTempQueDTO.builder()
                                 .pt_register_userId(userId)
                                 .build()
