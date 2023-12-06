@@ -86,6 +86,13 @@ public class PartnerManageController {
         return ResponseEntity.ok().body(apiResponse);
     }
 
+    /**
+     *
+     * @param accessHeader
+     * @param partner
+     * @return          resultMap.put("partnerInfo", partnerInfo); // 파트너 정보
+     *                  resultMap.put("reqQueInfo", reqQue); // 요청 상황
+     */
     // Todo : 파트너 찾기
     @RequestMapping("/searchPartnerWithCode")
     public ResponseEntity<ApiResponse> searchPartnerWithCode(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,

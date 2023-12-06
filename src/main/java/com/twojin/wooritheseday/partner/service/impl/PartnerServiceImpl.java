@@ -62,6 +62,16 @@ public class PartnerServiceImpl implements PartnerService {
         String tempUserId = tempQue.getPtTempUserId();
         PartnerRequestQueueDTO reqQue= partnerReqQueueRepository.findByPtRequesterIdAndPtAcceptorId(requesterId, tempUserId).orElse(null);
 
+        if (reqQue != null) { // 필요한 정보만 리턴
+            return PartnerRequestQueueDTO.builder()
+                    .ptRequesterId(reqQue.getPtRequesterId())
+                    .ptAcceptorId(reqQue.getPtAcceptorId())
+                    .regDt(reqQue.getRegDt())
+                    .updateDt(reqQue.getUpdateDt())
+                    .ptReqStatus(reqQue.getPtReqStatus())
+                    .build();
+        }
+
         return reqQue;
     }
 

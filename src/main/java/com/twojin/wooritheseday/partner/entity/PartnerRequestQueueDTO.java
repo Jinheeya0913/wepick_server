@@ -28,11 +28,19 @@ public class PartnerRequestQueueDTO {
     private String ptReqStatus; // 처리 상태
 
     @CreationTimestamp
-    private Date ptReqDt;
+    private Date regDt;
 
     @UpdateTimestamp
     private Date updateDt;
 
-
-
+    @Builder
+    public PartnerRequestQueueDTO(Long ptRegQueCd, String ptAcceptorId, String ptRequesterId, String ptTempCd, String ptReqStatus, Date regDt, Date updateDt) {
+        this.ptRegQueCd = ptRegQueCd;
+        this.ptAcceptorId = ptAcceptorId;
+        this.ptRequesterId = ptRequesterId;
+        this.ptTempCd = ptTempCd;
+        this.ptReqStatus = ptReqStatus;
+        this.regDt = regDt;
+        this.updateDt = updateDt;
+    }
 }
