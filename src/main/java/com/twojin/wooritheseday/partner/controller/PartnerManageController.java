@@ -10,7 +10,6 @@ import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
-import com.twojin.wooritheseday.partner.util.PartnerUtils;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.user.service.UserService;
@@ -35,7 +34,7 @@ public class PartnerManageController {
     @Autowired
     UserService userService;
 
-    // Todo : 내 파트너 유무 조회
+    // 0. 내 파트너 유무 조회
     // partner_m 테이블을 확인했을 때 조회된 파트너의 정보가 없으면 null
     @RequestMapping("/getMyPartner")
     public ResponseEntity<ApiResponse> getMyPartnerInfo(@RequestHeader(AuthConstants.ACCESS_HEADER) String accessHeader) {
@@ -65,7 +64,7 @@ public class PartnerManageController {
         return ResponseEntity.ok().body(apiResponse);
     }
 
-    // Todo : Partner 1. 파트너
+    // Partner 1. 파트너 등록 코드
     @RequestMapping("/getMyPartnerRegCode")
     public ResponseEntity<ApiResponse> getMySearchCode(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader) {
         JSONObject resultObj = new JSONObject();
@@ -93,7 +92,7 @@ public class PartnerManageController {
      * @return          resultMap.put("partnerInfo", partnerInfo); // 파트너 정보
      *                  resultMap.put("reqQueInfo", reqQue); // 요청 상황
      */
-    // Todo : 파트너 찾기
+    //  2, 파트너 찾기
     @RequestMapping("/searchPartnerWithCode")
     public ResponseEntity<ApiResponse> searchPartnerWithCode(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
                                                              @RequestBody PartnerTempQueDTO partner) {
@@ -148,24 +147,25 @@ public class PartnerManageController {
         return ResponseEntity.ok().body(apiResponse);
     }
 
-    // Todo : 파트너 요청 보내기
-    @RequestMapping("/requestPartner")
-    public ResponseEntity<ApiResponse> requestPartner(@RequestBody PartnerRequestQueueDTO dto, @RequestParam String ptRegCd) {
+    // Todo Partner 3 파트너 요청 보내기
+    @RequestMapping("/sendPartnerRequest")
+    public ResponseEntity<ApiResponse> sendPartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
+                                                      @RequestBody PartnerTempQueDTO dto) {
 
-        JSONObject result = new JSONObject();
+        log.debug("[requestPartner] >> dto :: " + dto.toString());
 
-        JSONObject result1;
+        ApiResponse apiResponse = null;
+        String requesterId = TokenUtil.getUserIdFromHeader(accessHeader);
 
 
-//        UserDTO partner =partnerService.selectPartnerQueueWithPtRegCd(ptRegCd);
+        try {
+            partnerService.registRequestPartner(dto, requesterId);
+            apiResponse = ApiResponse.createSuccessApiResponseAuto();
+        } catch (Exception e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        }
 
-//        dto.setPtRegUserId(partner.getUserId());
-//        PartnerRequestQueueDTO res = partnerService.requestPartner(dto);
-//
-//        if (res != null) {
-//            result = ConvertModules.dtoToJsonObj(res);
-//        }
-        return ResponseEntity.ok().body(ApiResponse.createSuccessApiResponseWithObj(null));
+        return ResponseEntity.ok().body(apiResponse);
     }
 
 

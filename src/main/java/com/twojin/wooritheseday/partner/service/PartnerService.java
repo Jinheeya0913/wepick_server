@@ -3,7 +3,6 @@ package com.twojin.wooritheseday.partner.service;
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
-import com.twojin.wooritheseday.user.entity.UserDTO;
 
 public interface PartnerService {
 
@@ -21,6 +20,6 @@ public interface PartnerService {
     // 4. 신청 전 : 검색된 파트너에 대한 신청 상태 검색
     PartnerRequestQueueDTO selectRequestStatusWithRequesterId(PartnerTempQueDTO tempQue, String requesterId);
 
-    public PartnerRequestQueueDTO requestPartner(PartnerRequestQueueDTO dto);
+    public boolean registRequestPartner(PartnerTempQueDTO dto, String requesterId);
 
 }

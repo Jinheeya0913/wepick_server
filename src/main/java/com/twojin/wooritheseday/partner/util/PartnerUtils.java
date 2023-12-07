@@ -9,4 +9,8 @@ public class PartnerUtils {
         return randomCd;
     }
 
+    public static void validExistProgressRequest() {
+
+    }
+
 }

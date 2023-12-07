@@ -4,11 +4,14 @@ import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 
 @Getter
 @Setter
+@Slf4j
 public class ApiResponse{
+
 
     // API 응답 결과 Response, divisionCode
     private String result;
@@ -58,6 +61,8 @@ public class ApiResponse{
     public static ApiResponse createFailApiResponseAutoWithException(Exception e) {
 
         if (e instanceof BusinessExceptionHandler) {
+            log.error("[apiResponse] >> getMessage" + ((BusinessExceptionHandler) e).getErrorCode().getMessage());
+
             return ApiResponse.builder()
                     .result("FAIL:" + ((BusinessExceptionHandler) e).getErrorCode().getDivisionCode()) // : 뒤에 divisionCode
                     .resultCode(Integer.toString(((BusinessExceptionHandler) e).getErrorCode().getStatus()))

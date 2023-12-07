@@ -1,11 +1,11 @@
 package com.twojin.wooritheseday.partner.service.impl;
 
+import com.twojin.wooritheseday.auth.constant.ProgressConstants;
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
-import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.partner.repository.PartnerDtoRepository;
 import com.twojin.wooritheseday.partner.repository.PartnerQueRepository;
 import com.twojin.wooritheseday.partner.repository.PartnerReqQueueRepository;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service("partnerService")
 @Slf4j
@@ -60,7 +61,7 @@ public class PartnerServiceImpl implements PartnerService {
     @Override
     public PartnerRequestQueueDTO selectRequestStatusWithRequesterId(PartnerTempQueDTO tempQue, String requesterId) {
         String tempUserId = tempQue.getPtTempUserId();
-        PartnerRequestQueueDTO reqQue= partnerReqQueueRepository.findByPtRequesterIdAndPtAcceptorId(requesterId, tempUserId).orElse(null);
+        PartnerRequestQueueDTO reqQue = partnerReqQueueRepository.findByPtRequesterIdAndPtAcceptorId(requesterId, tempUserId).orElse(null);
 
         if (reqQue != null) { // 필요한 정보만 리턴
             return PartnerRequestQueueDTO.builder()
@@ -75,10 +76,11 @@ public class PartnerServiceImpl implements PartnerService {
         return reqQue;
     }
 
+
     @Override
     @Transactional
     public PartnerTempQueDTO createPartnerRegCd(String userId) {
-        // Todo : Partner 2. 생성하기
+        // Todo : Partner 2. 파트너 코드 생성하기
         String randomStr = PartnerUtils.createPartnerQueueCode();
 
         PartnerTempQueDTO partnerTempQueDTO = partnerQueRepository
@@ -102,12 +104,45 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     @Override
-    public PartnerRequestQueueDTO requestPartner(PartnerRequestQueueDTO dto ) {
-        // Todo : First(빌더 활용하여 save)
-        dto.setPtReqStatus("Q");
-        PartnerRequestQueueDTO req = partnerReqQueueRepository.save(dto);
-        return req;
+    public boolean registRequestPartner(PartnerTempQueDTO dto, String requesterId) {
+        PartnerRequestQueueDTO requestQueueDTO = null;
+        List<PartnerRequestQueueDTO> queList = null;
+        String acceptorId = dto.getPtTempUserId();
+
+
+        // 1. 요청을 보내기 전 요청이 진행 중인 건이 있는지 확인
+        // - db에서 요청자와 대상자 데이터 조회
+
+        queList = partnerReqQueueRepository.findAllByPtRequesterIdAndPtAcceptorId(requesterId, acceptorId);
+
+        // 만약 누적 건이 있다면, 누적 처리 건 중에서 검증 진행
+        if (queList.size() > 0) {
+            for (PartnerRequestQueueDTO que : queList) {
+                String requestStatus = que.getPtReqStatus();
+                String requestTempCd = que.getPtTempCd();
+
+                // 요청 처리 중인 건이 있으면
+                if (requestStatus.equals(ProgressConstants.PROGRESSED)) {
+                    throw new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_PROGRESSED.getMessage(), ErrorCode.PARTNER_REQUEST_PROGRESSED);
+                }
+
+                // 같은 신청 코드로 접수된 건이 있으면
+                if (requestTempCd.equals(dto.getPtTempRegCd())) {
+                    throw new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_USED_TEMPCD.getMessage(), ErrorCode.PARTNER_REQUEST_USED_TEMPCD);
+                }
+
+            }
+        }
+
+        partnerReqQueueRepository.save(PartnerRequestQueueDTO.builder()
+                .ptRequesterId(requesterId)
+                .ptAcceptorId(dto.getPtTempUserId())
+                .ptReqStatus(ProgressConstants.PROGRESSED)
+                .ptTempCd(dto.getPtTempRegCd())
+                .build());
+
+        return true;
     }
 
-    // Todo : Partner 3. 갱신하기
+
 }
