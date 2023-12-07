@@ -98,35 +98,39 @@ public class PartnerManageController {
                                                              @RequestBody PartnerTempQueDTO partner) {
         log.debug("[searchPartnerWithCode] >> START");
 
-        String ptRegCd= partner.getPtTempRegCd();
+        String ptTempRegCd= partner.getPtTempRegCd();
         String userId = TokenUtil.getUserIdFromHeader(accessHeader);
 
-        log.debug("[searchPartnerWithCode] >> ptRegCd :: " + ptRegCd);
+        log.debug("[searchPartnerWithCode] >> ptTempRegCd :: " + ptTempRegCd);
         log.debug("[searchPartnerWithCode] >> userId  :: " + userId);
 
         ApiResponse apiResponse = null;
         JSONObject result = new JSONObject();
         try {
-            if (ptRegCd != null) {
+            if (ptTempRegCd != null) {
 
                 // 1. 생성 번호로 유저 정보 찾기
-                log.debug("searchPartnerWithCode >> ptRegCd >> " + ptRegCd);
-                PartnerTempQueDTO tempQue = partnerService.selectPartnerQueueWithPtRegCd(ptRegCd);
-                log.debug("searchPartnerWithCode >> PartnerTempQueDTO >> " + tempQue.toString());
+                log.debug("[searchPartnerWithCode] >> ptRegCd >> " + ptTempRegCd);
+                PartnerTempQueDTO tempQue = partnerService.selectPartnerQueueWithPtTempRegCd(ptTempRegCd);
+                log.debug("[searchPartnerWithCode] >> PartnerTempQueDTO >> " + tempQue.toString());
 
                 String selectedUserId = tempQue.getPtTempUserId();
 
-
                 // 2, 자기 자신의 파트너 요청 코드를 입력할 경우
                 if (selectedUserId.equals(userId)) {
+                    log.error("[searchPartnerWithCode] >> 자기 자신의 파트너 요청 코드를 입력");
                     throw new BusinessExceptionHandler(ErrorCode.PARTNER_SELF.getMessage(), ErrorCode.PARTNER_SELF);
                 }
 
                 UserDTO partnerInfo = userService.selectUserByUserId(selectedUserId);
 
                 // 3. 검색한 파트너에 대한 요청 상황 검색
+
+                log.debug("[searchPartnerWithCode] >> 검색한 파트너에 대한 요청 상황 검색");
                 PartnerRequestQueueDTO reqQue=partnerService.selectRequestStatusWithRequesterId(tempQue, userId);
 
+
+                log.debug("[searchPartnerWithCode] >> Service End");
                 Map<String, Object> resultMap = new HashMap<>();
 
                 resultMap.put("partnerInfo", partnerInfo); // 파트너 정보
@@ -150,15 +154,16 @@ public class PartnerManageController {
     // Todo Partner 3 파트너 요청 보내기
     @RequestMapping("/sendPartnerRequest")
     public ResponseEntity<ApiResponse> sendPartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
-                                                      @RequestBody PartnerTempQueDTO dto) {
+                                                      @RequestBody PartnerTempQueDTO tempQueDTO) {
+        String ptTempRegCd = tempQueDTO.getPtTempRegCd();
 
-        log.debug("[requestPartner] >> dto :: " + dto.toString());
+        log.debug("[sendPartnerRequest] >> ptTempRegCd :: " + ptTempRegCd);
 
         ApiResponse apiResponse = null;
         String requesterId = TokenUtil.getUserIdFromHeader(accessHeader);
 
-
         try {
+            PartnerTempQueDTO dto = partnerService.selectPartnerQueueWithPtTempRegCd(ptTempRegCd);
             partnerService.registRequestPartner(dto, requesterId);
             apiResponse = ApiResponse.createSuccessApiResponseAuto();
         } catch (Exception e) {

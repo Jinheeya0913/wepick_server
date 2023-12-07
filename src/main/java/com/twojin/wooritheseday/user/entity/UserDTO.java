@@ -64,13 +64,14 @@ public class UserDTO implements UserDetails {
 //    }
 
     @Builder
-    UserDTO(String userNm, String userId, String userPw, String userEmail,  String userPhoneNum) {
+    UserDTO(String userNm, String userId, String userPw, String userEmail,  String userPhoneNum, String userImgUrl) {
         this.userNm = userNm;
         this.userId = userId;
         this.userEmail = userEmail;
         this.userPw = userPw;
         this.userPhoneNum = userPhoneNum;
         this.userUseAt = "Y";
+        this.userImgUrl = userImgUrl;
     }
 
     @Builder

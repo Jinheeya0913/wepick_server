@@ -102,10 +102,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO selectUserByUserId(String userId) {
-        log.debug("[selectUserByUserId] >> ID로 계정 조회");
+        log.debug("[selectUserByUserId] >> START");
         UserDTO result = userRepository.findByUserId(userId)
                 .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.USER_NOT_SELECTED.getMessage(), ErrorCode.USER_NOT_SELECTED));
-        return result;
+
+
+        log.debug("[selectUserByUserId] >> PERIOD");
+        return UserDTO.builder()
+                .userId(result.getUserId())
+                .userEmail(result.getUserEmail())
+                .userPhoneNum(result.getUserPhoneNum())
+                .userNm(result.getUserNm())
+                .userImgUrl(result.getUserImgUrl())
+                .build();
     }
 
     public String getEncodedPassword(String userPw) {

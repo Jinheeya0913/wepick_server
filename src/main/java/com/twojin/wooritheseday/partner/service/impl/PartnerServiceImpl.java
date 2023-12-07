@@ -44,7 +44,7 @@ public class PartnerServiceImpl implements PartnerService {
 
     // 2. 생성코드로 파트너 찾기
     @Override
-    public PartnerTempQueDTO selectPartnerQueueWithPtRegCd(String ptRegCd) {
+    public PartnerTempQueDTO selectPartnerQueueWithPtTempRegCd(String ptRegCd) {
         log.debug("[partnerService] >> selectPartnerQueueWithPtRegCd :: 시작");
         log.debug("[partnerService] >> selectPartnerQueueWithPtRegCd :: ptRegCd : " + ptRegCd);
 
@@ -60,6 +60,7 @@ public class PartnerServiceImpl implements PartnerService {
 
     @Override
     public PartnerRequestQueueDTO selectRequestStatusWithRequesterId(PartnerTempQueDTO tempQue, String requesterId) {
+        log.debug("[selectRequestStatusWithRequesterId] >> START");
         String tempUserId = tempQue.getPtTempUserId();
         PartnerRequestQueueDTO reqQue = partnerReqQueueRepository.findByPtRequesterIdAndPtAcceptorId(requesterId, tempUserId).orElse(null);
 
@@ -118,16 +119,20 @@ public class PartnerServiceImpl implements PartnerService {
         // 만약 누적 건이 있다면, 누적 처리 건 중에서 검증 진행
         if (queList.size() > 0) {
             for (PartnerRequestQueueDTO que : queList) {
+
+                log.error("[registRequestPartner] >> que :: " + que.toString());
                 String requestStatus = que.getPtReqStatus();
                 String requestTempCd = que.getPtTempCd();
 
                 // 요청 처리 중인 건이 있으면
                 if (requestStatus.equals(ProgressConstants.PROGRESSED)) {
+                    log.error("[registRequestPartner] >> 요청 처리 중인 건으로 ERROR");
                     throw new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_PROGRESSED.getMessage(), ErrorCode.PARTNER_REQUEST_PROGRESSED);
                 }
 
                 // 같은 신청 코드로 접수된 건이 있으면
                 if (requestTempCd.equals(dto.getPtTempRegCd())) {
+                    log.error("[registRequestPartner] >> 같은 신청 코드 접수");
                     throw new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_USED_TEMPCD.getMessage(), ErrorCode.PARTNER_REQUEST_USED_TEMPCD);
                 }
 

@@ -1,5 +1,6 @@
 package com.twojin.wooritheseday.partner.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,9 +29,11 @@ public class PartnerRequestQueueDTO {
     private String ptReqStatus; // 처리 상태
 
     @CreationTimestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
     private Date regDt;
 
     @UpdateTimestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
     private Date updateDt;
 
     @Builder

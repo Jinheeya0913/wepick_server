@@ -15,7 +15,7 @@ public interface PartnerService {
 
 
     // 3. 파트너 코드로 파트너 검색
-    PartnerTempQueDTO selectPartnerQueueWithPtRegCd(String ptRegCd);
+    PartnerTempQueDTO selectPartnerQueueWithPtTempRegCd(String ptTempRegCd);
 
     // 4. 신청 전 : 검색된 파트너에 대한 신청 상태 검색
     PartnerRequestQueueDTO selectRequestStatusWithRequesterId(PartnerTempQueDTO tempQue, String requesterId);
