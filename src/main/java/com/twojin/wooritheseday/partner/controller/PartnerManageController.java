@@ -10,6 +10,7 @@ import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
+import com.twojin.wooritheseday.partner.entity.vo.PartnerRequestInfoVo;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.user.service.UserService;
@@ -20,7 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/partner")
@@ -151,7 +154,7 @@ public class PartnerManageController {
         return ResponseEntity.ok().body(apiResponse);
     }
 
-    // Todo Partner 3 파트너 요청 보내기
+    // Partner 3 파트너 요청 보내기
     @RequestMapping("/sendPartnerRequest")
     public ResponseEntity<ApiResponse> sendPartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
                                                       @RequestBody PartnerTempQueDTO tempQueDTO) {
@@ -173,9 +176,30 @@ public class PartnerManageController {
         return ResponseEntity.ok().body(apiResponse);
     }
 
+    // Todo : Partner 4 : 내 파트너 요청 조회하기
+    @RequestMapping("/selectMyPartnerRequestQue")
+    public ResponseEntity<ApiResponse> selectMyPartnerRequesetQue(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader) {
+        log.debug("[selectMyPartnerRequesetQue] >> START");
+
+        ApiResponse apiResponse = null;
+        JSONObject result = null;
+        Map<String, Object> map = null;
+
+        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
 
 
-    // Todo : 내 파트너 요청 조회하기
+        try {
+            log.debug("[selectMyPartnerRequesetQue] >> 요청 목록 조회 START ");
+            map = partnerService.selectAllMyRequestQueWithAcceptorId(userId);
+            log.debug("[selectMyPartnerRequesetQue] >> 형변환 START ");
+            result = ConvertModules.dtoToJsonObj(map);
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(result);
+        } catch (Exception e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        }
+
+        return ResponseEntity.ok(apiResponse);
+    }
 
     // Todo : 파트너 요청 수락하기
 

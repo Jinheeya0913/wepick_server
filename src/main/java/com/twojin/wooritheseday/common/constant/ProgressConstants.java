@@ -1,4 +1,4 @@
-package com.twojin.wooritheseday.auth.constant;
+package com.twojin.wooritheseday.common.constant;
 
 public final class ProgressConstants {
 

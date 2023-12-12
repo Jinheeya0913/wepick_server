@@ -68,7 +68,12 @@ public class ApiResponse{
                     .resultCode(Integer.toString(((BusinessExceptionHandler) e).getErrorCode().getStatus()))
                     .resultMsg(e.getMessage())
                     .build();
+        } else {
+            log.error("[apiResponse] >> ERROR");
+            e.printStackTrace();
         }
+
+
 
         return new ApiResponse("FAILED", "401" , "실패하였습니다");
     }

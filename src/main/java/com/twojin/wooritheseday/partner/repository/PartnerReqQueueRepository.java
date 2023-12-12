@@ -14,5 +14,7 @@ public interface PartnerReqQueueRepository extends JpaRepository<PartnerRequestQ
 
     public List <PartnerRequestQueueDTO> findAllByPtRequesterIdAndPtAcceptorId(String requesterId, String acceptorIds);
 
+    public List<PartnerRequestQueueDTO> findAllByPtAcceptorId(String acceptorId);
+
 
 }

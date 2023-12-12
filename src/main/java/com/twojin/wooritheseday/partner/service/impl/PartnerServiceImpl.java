@@ -1,23 +1,30 @@
 package com.twojin.wooritheseday.partner.service.impl;
 
-import com.twojin.wooritheseday.auth.constant.ProgressConstants;
+import com.twojin.wooritheseday.common.constant.ProgressConstants;
 import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
+import com.twojin.wooritheseday.partner.entity.vo.PartnerRequestInfoVo;
 import com.twojin.wooritheseday.partner.repository.PartnerDtoRepository;
 import com.twojin.wooritheseday.partner.repository.PartnerQueRepository;
 import com.twojin.wooritheseday.partner.repository.PartnerReqQueueRepository;
+import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.user.repository.UserRepository;
 import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.partner.util.PartnerUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("partnerService")
 @Slf4j
@@ -106,7 +113,6 @@ public class PartnerServiceImpl implements PartnerService {
 
     @Override
     public boolean registRequestPartner(PartnerTempQueDTO dto, String requesterId) {
-        PartnerRequestQueueDTO requestQueueDTO = null;
         List<PartnerRequestQueueDTO> queList = null;
         String acceptorId = dto.getPtTempUserId();
 
@@ -149,5 +155,51 @@ public class PartnerServiceImpl implements PartnerService {
         return true;
     }
 
+    @Override
+    public Map<String, Object> selectAllMyRequestQueWithAcceptorId(String acceptorId) {
+        log.debug("[selectAllMyRequestQueWithAcceptorId] >> START");
+        List<PartnerRequestQueueDTO> queueDTOList = null;
+        Map<String, Object> objectMap = new HashMap<>();
+        try {
+             queueDTOList = partnerReqQueueRepository.findAllByPtAcceptorId(acceptorId);
+        } catch (Exception e) {
+            throw new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_SELECT_FAIL.getMessage(), ErrorCode.PARTNER_REQUEST_SELECT_FAIL);
+        }
+        List<PartnerRequestInfoVo> requestInfoList = new ArrayList<>();
 
+        for (PartnerRequestQueueDTO requestInfo : queueDTOList) {
+            // 1. 거절 됐거나 만료됐으면 패스
+            if (requestInfo.getPtReqStatus().equals(ProgressConstants.REFUESED)) {
+                log.error("[selectAllMyRequestQueWithAcceptorId] >> continue1");
+                continue;
+            }
+
+            log.debug("[selectAllMyRequestQueWithAcceptorId] >> 요청자 정보 조회");
+
+            String userId = requestInfo.getPtRequesterId();
+            UserDTO requesterInfo = userRepository.findByUserId(userId).orElse(null);
+
+            log.debug("[selectAllMyRequestQueWithAcceptorId] >> 요청자 정보 : " + requesterInfo.toString());
+
+            if(requesterInfo!= null)  requesterInfo = UserDTO.builder()
+                        .userImgUrl(requesterInfo.getUserImgUrl())
+                        .userEmail(requesterInfo.getUserEmail())
+                        .userNm(requesterInfo.getUserNm())
+                        .userPhoneNum(requesterInfo.getUserPhoneNum())
+                        .build();
+
+            // 2. 비활성화된 사용자면 패스
+            if (requesterInfo.getUserUseAt().equals("N")) {
+                log.error("[selectAllMyRequestQueWithAcceptorId] >> continue2");
+                continue;
+            }
+            JSONObject requestInfoObj = ConvertModules.dtoToJsonObj(requestInfo);
+            JSONObject requesterInfoObj = ConvertModules.dtoToJsonObj(requesterInfo);
+
+            objectMap.put("ptRequestInfoObj", requestInfoObj);
+            objectMap.put("ptRequesterInfoObj", requesterInfoObj);
+
+        }
+        return objectMap;
+    }
 }

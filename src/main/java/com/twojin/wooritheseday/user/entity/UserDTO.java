@@ -1,5 +1,6 @@
 package com.twojin.wooritheseday.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -43,6 +44,7 @@ public class UserDTO implements UserDetails {
     private String userPhoneNum;
 
     @CreationTimestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
     private Date regDate;
 
     private String userUseAt;
