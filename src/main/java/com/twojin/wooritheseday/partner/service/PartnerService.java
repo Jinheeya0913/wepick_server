@@ -45,4 +45,16 @@ public interface PartnerService {
      */
     public List<Map<String,Object>> selectAllMyRequestQueWithAcceptorId(String acceptorId);
 
+    /**
+     * 7. 파트너 요청 거절
+     */
+
+    public void acceptPartnerRequest();
+
+    /**
+     * 8. 파트너 요청 수락
+     */
+
+    public boolean refusePartnerRequest( PartnerRequestQueueDTO queueDTO);
+
 }

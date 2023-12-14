@@ -1,6 +1,7 @@
 package com.twojin.wooritheseday.partner.controller;
 
 
+import antlr.Token;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
@@ -177,7 +178,7 @@ public class PartnerManageController {
         return ResponseEntity.ok().body(apiResponse);
     }
 
-    // Todo : Partner 4 : 내 파트너 요청 조회하기
+    // Partner 4 : 내 파트너 요청 조회하기
     @RequestMapping("/selectMyPartnerRequestQue")
     public ResponseEntity<ApiResponse> selectMyPartnerRequesetQue(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader) {
         log.debug("[selectMyPartnerRequesetQue] >> START");
@@ -203,6 +204,27 @@ public class PartnerManageController {
     }
 
     // Todo : 파트너 요청 수락하기
+    @RequestMapping("/acceptPartnerRequest")
+    public ResponseEntity<ApiResponse> acceptPartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
+                                               @RequestBody PartnerRequestQueueDTO requestQueueDTO) {
+
+        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
+
+
+        return ResponseEntity.ok(ApiResponse.createSuccessApiResponseAuto());
+    }
+
+    // Todo : 파트너 요청 거절하기
+    @RequestMapping("/refusePartnerRequest")
+    public ResponseEntity<ApiResponse> refusePartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
+                                                            @RequestBody PartnerRequestQueueDTO requestQueueDTO) {
+
+        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
+        partnerService.refusePartnerRequest(requestQueueDTO);
+
+
+        return ResponseEntity.ok(ApiResponse.createSuccessApiResponseAuto());
+    }
 
     // Todo : 파트너 요청 거절하기
 

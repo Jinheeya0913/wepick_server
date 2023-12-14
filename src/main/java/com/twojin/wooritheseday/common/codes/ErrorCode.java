@@ -12,6 +12,8 @@ public enum ErrorCode {
 
     BUSINESS_EXCEPTION_ERROR(200, "B999", "Business Exception Error"),
 
+    BUSINESS_ALREADY_PROGRESSED(200, "B999", "이미 처리되었습니다."),
+
     /** Custom Login Error List */
 
     USER_NOT_FOUND(200, "B001", "로그인을 실패했습니다. 아이디와 비밀번호를 확인해주세요."),
@@ -24,7 +26,6 @@ public enum ErrorCode {
      */
 
     USER_PROFILE_IMG_UPLOAD(200, "F001", "이미지 저장에 실패하였습니다."),
-
     USER_PROFILE_IMG_NOT_FOUND(200, "F002", "이미지를 찾지 못했습니다."),
     USER_PROFILE_IMG_DOWNLOAD(200, "F003", "이미지 불러오기에 실패하였습니다."),
 
@@ -46,7 +47,6 @@ public enum ErrorCode {
     PARTNER_REQUEST_FAILED(200, "P003", "요청 실패하였습니다."),
     PARTNER_REQUEST_PROGRESSED(200, "P004", "처리 중인 요청 건이 있습니다."),
     PARTNER_REQUEST_USED_TEMPCD(200, "P004", "요청 실패하였습니다."),
-
     PARTNER_REQUEST_SELECT_FAIL(200, "P005", "요청 목록을 불러오던 중 실패하였습니다."),
     PARTNER_REGIST_QUEUE_FAIL(200,"P001", "등록 실패하였습니다"),
     PARTNER_REGIST_NON_EXIST(200,"P001", "등록돼 있지 않은 코드입니다"),

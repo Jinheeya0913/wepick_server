@@ -21,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("partnerService")
 @Slf4j
@@ -120,7 +117,8 @@ public class PartnerServiceImpl implements PartnerService {
         // 1. 요청을 보내기 전 요청이 진행 중인 건이 있는지 확인
         // - db에서 요청자와 대상자 데이터 조회
 
-        queList = partnerReqQueueRepository.findAllByPtRequesterIdAndPtAcceptorId(requesterId, acceptorId);
+        queList = partnerReqQueueRepository.findAllByPtRequesterIdAndPtAcceptorId(requesterId, acceptorId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_SELECT_FAIL.getMessage(), ErrorCode.PARTNER_REQUEST_SELECT_FAIL));
 
         // 만약 누적 건이 있다면, 누적 처리 건 중에서 검증 진행
         if (queList.size() > 0) {
@@ -209,5 +207,31 @@ public class PartnerServiceImpl implements PartnerService {
 
 
         return mapList;
+    }
+
+    @Override
+    public void acceptPartnerRequest() {
+
+    }
+
+    @Override
+    @Transactional
+    public boolean refusePartnerRequest(PartnerRequestQueueDTO queueDTO) {
+
+        log.debug("[refusePartnerRequest] >> 거절 시작 ");
+        PartnerRequestQueueDTO requestQueueDTO = null;
+        log.debug("[refusePartnerRequest] >> queueDTO.getPtTempCd : " + queueDTO.getPtTempCd());
+        log.debug("[refusePartnerRequest] >> queueDTO.getPtTempCd : " + queueDTO.getPtRequesterId());
+        requestQueueDTO = partnerReqQueueRepository.findByPtTempCdAndPtRequesterId(queueDTO.getPtTempCd(), queueDTO.getPtRequesterId())
+                    .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_SELECT_FAIL.getMessage(), ErrorCode.PARTNER_REQUEST_SELECT_FAIL));
+
+        String ptReqStatus = requestQueueDTO.getPtReqStatus();
+
+        if (!ptReqStatus.equals(ProgressConstants.PROGRESSED)) {
+            throw new BusinessExceptionHandler(ErrorCode.BUSINESS_ALREADY_PROGRESSED.getMessage(), ErrorCode.BUSINESS_ALREADY_PROGRESSED);
+        }
+
+        requestQueueDTO.setPtReqStatus(ProgressConstants.REFUESED);
+        return true;
     }
 }
