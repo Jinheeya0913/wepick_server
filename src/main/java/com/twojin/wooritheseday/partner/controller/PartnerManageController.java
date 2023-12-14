@@ -1,7 +1,6 @@
 package com.twojin.wooritheseday.partner.controller;
 
 
-import antlr.Token;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
@@ -11,7 +10,6 @@ import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
-import com.twojin.wooritheseday.partner.entity.vo.PartnerRequestInfoVo;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.user.service.UserService;
@@ -23,10 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RequestMapping("/partner")
 @Controller
@@ -203,30 +198,60 @@ public class PartnerManageController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // 파트너 요청 거절하기
+    @RequestMapping("/refusePartnerRequest")
+    public ResponseEntity<ApiResponse> refusePartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
+                                                            @RequestBody PartnerRequestQueueDTO ptRequestQue) {
+
+        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
+
+        ApiResponse apiResponse = null;
+        try {
+            boolean result = partnerService.refusePartnerRequest(ptRequestQue);
+            if(result){
+                apiResponse = ApiResponse.createSuccessApiResponseAuto();
+            } else {
+                throw new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_REFUSE_FAIL.getMessage(), ErrorCode.PARTNER_REQUEST_REFUSE_FAIL);
+            }
+        } catch (BusinessExceptionHandler e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        } catch (Exception e) {
+            log.error("[error] >> " , e);
+            apiResponse = ApiResponse.createFailApiResponseAuto();
+        }
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
     // Todo : 파트너 요청 수락하기
     @RequestMapping("/acceptPartnerRequest")
     public ResponseEntity<ApiResponse> acceptPartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
-                                               @RequestBody PartnerRequestQueueDTO requestQueueDTO) {
+                                                            @RequestBody PartnerRequestQueueDTO ptRequestQue) {
 
         String userId = TokenUtil.getUserIdFromHeader(accessHeader);
+        ApiResponse apiResponse = null;
 
+        try {
+            PartnerMaterDTO partnerMaterDTO = partnerService.acceptPartnerRequest(ptRequestQue);
+            if (partnerMaterDTO != null) {
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(partnerMaterDTO);
+            } else {
+                apiResponse = ApiResponse.createFailApiResponseAuto();
+            }
+        } catch (BusinessExceptionHandler e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        } catch (Exception e) {
+            log.error("[error]", e);
+            apiResponse = ApiResponse.createFailApiResponseAuto();
+        }
 
-        return ResponseEntity.ok(ApiResponse.createSuccessApiResponseAuto());
+        return ResponseEntity.ok(apiResponse);
     }
 
     // Todo : 파트너 요청 거절하기
-    @RequestMapping("/refusePartnerRequest")
-    public ResponseEntity<ApiResponse> refusePartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
-                                                            @RequestBody PartnerRequestQueueDTO requestQueueDTO) {
-
-        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
-        partnerService.refusePartnerRequest(requestQueueDTO);
 
 
-        return ResponseEntity.ok(ApiResponse.createSuccessApiResponseAuto());
-    }
 
-    // Todo : 파트너 요청 거절하기
 
     // Todo : 파트너 삭제하기
 

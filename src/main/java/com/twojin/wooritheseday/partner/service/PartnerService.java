@@ -49,7 +49,7 @@ public interface PartnerService {
      * 7. 파트너 요청 거절
      */
 
-    public void acceptPartnerRequest();
+    public PartnerMaterDTO acceptPartnerRequest(PartnerRequestQueueDTO queueDTO);
 
     /**
      * 8. 파트너 요청 수락

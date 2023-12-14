@@ -48,6 +48,8 @@ public enum ErrorCode {
     PARTNER_REQUEST_PROGRESSED(200, "P004", "처리 중인 요청 건이 있습니다."),
     PARTNER_REQUEST_USED_TEMPCD(200, "P004", "요청 실패하였습니다."),
     PARTNER_REQUEST_SELECT_FAIL(200, "P005", "요청 목록을 불러오던 중 실패하였습니다."),
+
+    PARTNER_REQUEST_REFUSE_FAIL(200, "P006", "요청 거부를 실패하였습니다. 다시 시도 바랍니다."),
     PARTNER_REGIST_QUEUE_FAIL(200,"P001", "등록 실패하였습니다"),
     PARTNER_REGIST_NON_EXIST(200,"P001", "등록돼 있지 않은 코드입니다"),
 

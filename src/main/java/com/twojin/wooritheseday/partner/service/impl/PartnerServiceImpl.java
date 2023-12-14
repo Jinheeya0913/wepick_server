@@ -210,18 +210,38 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     @Override
-    public void acceptPartnerRequest() {
+    @Transactional
+    public PartnerMaterDTO acceptPartnerRequest(PartnerRequestQueueDTO queueDTO) {
+        PartnerRequestQueueDTO requestQueueDTO = null;
+        PartnerMaterDTO partnerMaterDTO = null;
 
+        requestQueueDTO = partnerReqQueueRepository.findByPtTempCdAndPtRequesterId(queueDTO.getPtTempCd(), queueDTO.getPtRequesterId())
+                .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_SELECT_FAIL.getMessage(), ErrorCode.PARTNER_REQUEST_SELECT_FAIL));
+
+        String ptReqStatus = requestQueueDTO.getPtReqStatus();
+
+        if (!ptReqStatus.equals(ProgressConstants.PROGRESSED)) {
+            throw new BusinessExceptionHandler(ErrorCode.BUSINESS_ALREADY_PROGRESSED.getMessage(), ErrorCode.BUSINESS_ALREADY_PROGRESSED);
+        }
+
+        partnerMaterDTO = PartnerMaterDTO.builder()
+                .partnerUser1(queueDTO.getPtAcceptorId())
+                .partnerUser2(queueDTO.getPtRequesterId())
+                .partnerConnYn(true)
+                .partnerConnCd(queueDTO.getPtTempCd())
+                .build();
+
+        partnerMaterDTO = partnerDtoRepository.save(partnerMaterDTO);
+        requestQueueDTO.setPtReqStatus("ACCEPTED");
+
+        return partnerMaterDTO;
     }
 
     @Override
     @Transactional
     public boolean refusePartnerRequest(PartnerRequestQueueDTO queueDTO) {
 
-        log.debug("[refusePartnerRequest] >> 거절 시작 ");
         PartnerRequestQueueDTO requestQueueDTO = null;
-        log.debug("[refusePartnerRequest] >> queueDTO.getPtTempCd : " + queueDTO.getPtTempCd());
-        log.debug("[refusePartnerRequest] >> queueDTO.getPtTempCd : " + queueDTO.getPtRequesterId());
         requestQueueDTO = partnerReqQueueRepository.findByPtTempCdAndPtRequesterId(queueDTO.getPtTempCd(), queueDTO.getPtRequesterId())
                     .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_SELECT_FAIL.getMessage(), ErrorCode.PARTNER_REQUEST_SELECT_FAIL));
 
