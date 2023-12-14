@@ -156,10 +156,11 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     @Override
-    public Map<String, Object> selectAllMyRequestQueWithAcceptorId(String acceptorId) {
+    public List<Map<String, Object>> selectAllMyRequestQueWithAcceptorId(String acceptorId) {
         log.debug("[selectAllMyRequestQueWithAcceptorId] >> START");
         List<PartnerRequestQueueDTO> queueDTOList = null;
-        Map<String, Object> objectMap = new HashMap<>();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+
         try {
              queueDTOList = partnerReqQueueRepository.findAllByPtAcceptorId(acceptorId);
         } catch (Exception e) {
@@ -168,6 +169,7 @@ public class PartnerServiceImpl implements PartnerService {
         List<PartnerRequestInfoVo> requestInfoList = new ArrayList<>();
 
         for (PartnerRequestQueueDTO requestInfo : queueDTOList) {
+            Map<String, Object> objectMap = new HashMap<>();
             // 1. 거절 됐거나 만료됐으면 패스
             if (requestInfo.getPtReqStatus().equals(ProgressConstants.REFUESED)) {
                 log.error("[selectAllMyRequestQueWithAcceptorId] >> continue1");
@@ -182,24 +184,30 @@ public class PartnerServiceImpl implements PartnerService {
             log.debug("[selectAllMyRequestQueWithAcceptorId] >> 요청자 정보 : " + requesterInfo.toString());
 
             if(requesterInfo!= null)  requesterInfo = UserDTO.builder()
+                        .userId(requesterInfo.getUserId())
+                        .userNm(requesterInfo.getUserNm())
                         .userImgUrl(requesterInfo.getUserImgUrl())
                         .userEmail(requesterInfo.getUserEmail())
-                        .userNm(requesterInfo.getUserNm())
                         .userPhoneNum(requesterInfo.getUserPhoneNum())
                         .build();
 
             // 2. 비활성화된 사용자면 패스
-            if (requesterInfo.getUserUseAt().equals("N")) {
+            if (!requesterInfo.getUserUseAt().equals("Y")) {
                 log.error("[selectAllMyRequestQueWithAcceptorId] >> continue2");
                 continue;
             }
             JSONObject requestInfoObj = ConvertModules.dtoToJsonObj(requestInfo);
             JSONObject requesterInfoObj = ConvertModules.dtoToJsonObj(requesterInfo);
 
-            objectMap.put("ptRequestInfoObj", requestInfoObj);
-            objectMap.put("ptRequesterInfoObj", requesterInfoObj);
+            objectMap.put("reqQueInfo", requestInfoObj);
+            objectMap.put("partnerInfo", requesterInfoObj);
+
+
+            mapList.add(objectMap);
 
         }
-        return objectMap;
+
+
+        return mapList;
     }
 }

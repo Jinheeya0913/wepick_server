@@ -15,6 +15,7 @@ import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -182,17 +183,17 @@ public class PartnerManageController {
         log.debug("[selectMyPartnerRequesetQue] >> START");
 
         ApiResponse apiResponse = null;
-        JSONObject result = null;
-        Map<String, Object> map = null;
+        JSONArray result = null;
+        List <Map<String, Object>> mapList = null;
 
         String userId = TokenUtil.getUserIdFromHeader(accessHeader);
 
 
         try {
             log.debug("[selectMyPartnerRequesetQue] >> 요청 목록 조회 START ");
-            map = partnerService.selectAllMyRequestQueWithAcceptorId(userId);
-            log.debug("[selectMyPartnerRequesetQue] >> 형변환 START ");
-            result = ConvertModules.dtoToJsonObj(map);
+            mapList = partnerService.selectAllMyRequestQueWithAcceptorId(userId);
+            log.debug("[selectMyPartnerRequesetQue] >> mapList :: " + mapList.toString());
+            result = ConvertModules.listToJsonArray(mapList);
             apiResponse = ApiResponse.createSuccessApiResponseWithObj(result);
         } catch (Exception e) {
             apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);

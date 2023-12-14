@@ -2,9 +2,12 @@ package com.twojin.wooritheseday.common.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.util.List;
 
 public class ConvertModules {
 
@@ -29,4 +32,12 @@ public class ConvertModules {
         }
         return resultObj;
     }
+    public static JSONArray listToJsonArray(List<?> list) {
+        JSONArray jsonArray = new JSONArray();
+        for (Object obj : list) {
+            jsonArray.add(dtoToJsonObj(obj));
+        }
+        return jsonArray;
+    }
+
 }

@@ -43,6 +43,6 @@ public interface PartnerService {
      * @param acceptorId
      * @return List<PartnerRequestInfoVo>
      */
-    public Map<String,Object> selectAllMyRequestQueWithAcceptorId(String acceptorId);
+    public List<Map<String,Object>> selectAllMyRequestQueWithAcceptorId(String acceptorId);
 
 }

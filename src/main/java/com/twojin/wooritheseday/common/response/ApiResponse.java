@@ -22,11 +22,11 @@ public class ApiResponse{
     // API 응답 코드 Message
     private String resultMsg;
 
-    private JSONObject resultData;
+    private Object resultData;
 
 
     @Builder
-    public ApiResponse(final String result, final String resultCode, final String resultMsg, JSONObject resultData) {
+    public ApiResponse(final String result, final String resultCode, final String resultMsg, Object resultData) {
         this.result = result;
         this.resultCode = resultCode;
         this.resultMsg = resultMsg;
@@ -41,7 +41,7 @@ public class ApiResponse{
     }
 
 
-    public static ApiResponse createSuccessApiResponseWithObj(JSONObject obj) {
+    public static ApiResponse createSuccessApiResponseWithObj(Object obj) {
         return ApiResponse.builder()
                 .result("SUCCESS")
                 .resultCode("101")
