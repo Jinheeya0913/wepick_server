@@ -233,6 +233,7 @@ public class PartnerManageController {
 
         try {
             PartnerMaterDTO partnerMaterDTO = partnerService.acceptPartnerRequest(ptRequestQue);
+
             if (partnerMaterDTO != null) {
                 apiResponse = ApiResponse.createSuccessApiResponseWithObj(partnerMaterDTO);
             } else {

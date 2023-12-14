@@ -42,7 +42,7 @@ public class PartnerServiceImpl implements PartnerService {
 
     @Override
     public PartnerMaterDTO getPartnerInfoByUserId(String userId) {
-        PartnerMaterDTO partnerMaterDTO = partnerDtoRepository.findByPartnerUser1OrPartnerUser2(userId, userId).orElse(null);
+        PartnerMaterDTO partnerMaterDTO = partnerDtoRepository.findMyPartnerInfoByUserId(userId).orElse(null);
         return partnerMaterDTO;
     }
 
@@ -222,6 +222,17 @@ public class PartnerServiceImpl implements PartnerService {
 
         if (!ptReqStatus.equals(ProgressConstants.PROGRESSED)) {
             throw new BusinessExceptionHandler(ErrorCode.BUSINESS_ALREADY_PROGRESSED.getMessage(), ErrorCode.BUSINESS_ALREADY_PROGRESSED);
+        }
+
+        String requesterId = queueDTO.getPtRequesterId();
+        String acceptorId = queueDTO.getPtAcceptorId();
+
+        // db에 등록돼 있는지 확인
+        PartnerMaterDTO requesterInfo = partnerDtoRepository.findMyPartnerInfoByUserId(requesterId).orElse(null);
+        PartnerMaterDTO acceptorInfo = partnerDtoRepository.findMyPartnerInfoByUserId(acceptorId).orElse(null);
+
+        if (requesterInfo != null || acceptorInfo != null) {
+            throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_IMPOSIBLE.getMessage(), ErrorCode.PARTNER_REGIST_IMPOSIBLE);
         }
 
         partnerMaterDTO = PartnerMaterDTO.builder()
