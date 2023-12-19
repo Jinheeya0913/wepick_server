@@ -7,14 +7,16 @@ import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
+import com.twojin.wooritheseday.partner.entity.vo.PartnerInfoVo;
 import com.twojin.wooritheseday.partner.entity.vo.PartnerRequestInfoVo;
-import com.twojin.wooritheseday.partner.repository.PartnerDtoRepository;
+import com.twojin.wooritheseday.partner.repository.PartnerMasterRepository;
 import com.twojin.wooritheseday.partner.repository.PartnerQueRepository;
 import com.twojin.wooritheseday.partner.repository.PartnerReqQueueRepository;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.user.repository.UserRepository;
 import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.partner.util.PartnerUtils;
+import com.twojin.wooritheseday.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +36,50 @@ public class PartnerServiceImpl implements PartnerService {
     PartnerReqQueueRepository partnerReqQueueRepository;
 
     @Autowired
-    PartnerDtoRepository partnerDtoRepository;
+    PartnerMasterRepository partnerMasterRepository;
 
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserService userService;
+
 
     @Override
-    public PartnerMaterDTO getPartnerInfoByUserId(String userId) {
-        PartnerMaterDTO partnerMaterDTO = partnerDtoRepository.findMyPartnerInfoByUserId(userId).orElse(null);
-        return partnerMaterDTO;
+    public PartnerInfoVo getPartnerInfoByUserId(String userId) {
+        PartnerMaterDTO partnerMaterDTO = partnerMasterRepository.findMyPartnerInfoByUserId(userId).orElse(null);
+
+        String partnerId = null;
+
+        if(partnerMaterDTO == null) return null;
+
+        if (!partnerMaterDTO.getPartnerUser1().equals(userId)) {
+            partnerId = partnerMaterDTO.getPartnerUser1();
+        } else {
+            partnerId = partnerMaterDTO.getPartnerUser2();
+        }
+
+        String partnerNm = userService.getUserNmByUserId(partnerId);
+
+        if (partnerNm.isEmpty()) {
+            throw new BusinessExceptionHandler(ErrorCode.PARTNER_FAILED.getMessage(), ErrorCode.PARTNER_FAILED);
+        }
+
+
+
+        PartnerInfoVo partnerInfoVo = PartnerInfoVo.builder()
+                .partnerId(partnerId)
+                .partnerConnCd(partnerMaterDTO.getPartnerConnCd())
+                .partnerConnYn(partnerMaterDTO.isPartnerConnYn())
+                .partnerNm(partnerNm)
+                .regDt(partnerMaterDTO.getRegDt())
+                .build();
+
+        if (partnerMaterDTO.getMeetDt() != null) {
+            partnerInfoVo.setMeetDt(partnerMaterDTO.getMeetDt());
+        }
+
+        return partnerInfoVo;
     }
 
     // 2. 생성코드로 파트너 찾기
@@ -211,7 +247,7 @@ public class PartnerServiceImpl implements PartnerService {
 
     @Override
     @Transactional
-    public PartnerMaterDTO acceptPartnerRequest(PartnerRequestQueueDTO queueDTO) {
+    public PartnerInfoVo acceptPartnerRequest(PartnerRequestQueueDTO queueDTO) {
         PartnerRequestQueueDTO requestQueueDTO = null;
         PartnerMaterDTO partnerMaterDTO = null;
 
@@ -228,8 +264,8 @@ public class PartnerServiceImpl implements PartnerService {
         String acceptorId = queueDTO.getPtAcceptorId();
 
         // db에 등록돼 있는지 확인
-        PartnerMaterDTO requesterInfo = partnerDtoRepository.findMyPartnerInfoByUserId(requesterId).orElse(null);
-        PartnerMaterDTO acceptorInfo = partnerDtoRepository.findMyPartnerInfoByUserId(acceptorId).orElse(null);
+        PartnerMaterDTO requesterInfo = partnerMasterRepository.findMyPartnerInfoByUserId(requesterId).orElse(null);
+        PartnerMaterDTO acceptorInfo = partnerMasterRepository.findMyPartnerInfoByUserId(acceptorId).orElse(null);
 
         if (requesterInfo != null || acceptorInfo != null) {
             throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_IMPOSIBLE.getMessage(), ErrorCode.PARTNER_REGIST_IMPOSIBLE);
@@ -242,10 +278,12 @@ public class PartnerServiceImpl implements PartnerService {
                 .partnerConnCd(queueDTO.getPtTempCd())
                 .build();
 
-        partnerMaterDTO = partnerDtoRepository.save(partnerMaterDTO);
+        partnerMaterDTO = partnerMasterRepository.save(partnerMaterDTO);
         requestQueueDTO.setPtReqStatus("ACCEPTED");
 
-        return partnerMaterDTO;
+        String partnerNm = userService.getUserNmByUserId(requesterId);
+
+        return new PartnerInfoVo(partnerMaterDTO,partnerMaterDTO.getPartnerUser2(),partnerNm);
     }
 
     @Override

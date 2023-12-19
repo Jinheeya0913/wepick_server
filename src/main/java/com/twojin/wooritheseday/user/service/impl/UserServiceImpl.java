@@ -117,6 +117,11 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    public  String getUserNmByUserId(String userId) {
+        String userNm= userRepository.findUserNmByUserId(userId).orElse(null);
+        return userNm;
+    }
+
     public String getEncodedPassword(String userPw) {
         return new String(Base64Utils.encode(userPw.getBytes()));
     }

@@ -19,4 +19,6 @@ public interface UserService  {
     boolean agreeUserInfo(UserDTO userDTO);
 
     UserDTO updateUserImgUrl(String imgUrl, String userId);
+
+    String getUserNmByUserId(String userId);
 }

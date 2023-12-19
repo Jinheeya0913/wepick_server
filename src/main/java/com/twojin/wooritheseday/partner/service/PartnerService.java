@@ -3,6 +3,7 @@ package com.twojin.wooritheseday.partner.service;
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
+import com.twojin.wooritheseday.partner.entity.vo.PartnerInfoVo;
 import com.twojin.wooritheseday.partner.entity.vo.PartnerRequestInfoVo;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface PartnerService {
 
 
     // 1. 내 파트너 조회
-    PartnerMaterDTO getPartnerInfoByUserId(String userId);
+    PartnerInfoVo getPartnerInfoByUserId(String userId);
 
     // 2. 파트너 코드 생성
     PartnerTempQueDTO createPartnerRegCd(String userId);
@@ -49,7 +50,7 @@ public interface PartnerService {
      * 7. 파트너 요청 거절
      */
 
-    public PartnerMaterDTO acceptPartnerRequest(PartnerRequestQueueDTO queueDTO);
+    public PartnerInfoVo acceptPartnerRequest(PartnerRequestQueueDTO queueDTO);
 
     /**
      * 8. 파트너 요청 수락

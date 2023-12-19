@@ -10,6 +10,7 @@ import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
+import com.twojin.wooritheseday.partner.entity.vo.PartnerInfoVo;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.user.service.UserService;
@@ -42,7 +43,7 @@ public class PartnerManageController {
 
         ApiResponse apiResponse = null;
         UserDTO user = null;
-        PartnerMaterDTO partner = null;
+        PartnerInfoVo partner = null;
 
         // 1. 우선 내 정보 조회
         String userId = TokenUtil.getUserIdFromHeader(accessHeader);
@@ -223,6 +224,25 @@ public class PartnerManageController {
         return ResponseEntity.ok(apiResponse);
     }
 
+
+    /**
+     * {
+     *     "result": "SUCCESS",
+     *     "resultCode": "101",
+     *     "resultMsg": "성공하였습니다",
+     *     "resultData": {
+     *         "partnerConnYn": false,
+     *         "partnerConnCd": "e15yo373p3un58y5",
+     *         "partnerId": "taran0913",
+     *         "partnerName": null,
+     *         "regDt": "2023-12-19T07:01:39.384+00:00",
+     *         "meetDt": null
+     *     }
+     * }
+     * @param accessHeader
+     * @param ptRequestQue
+     * @return
+     */
     // Todo : 파트너 요청 수락하기
     @RequestMapping("/acceptPartnerRequest")
     public ResponseEntity<ApiResponse> acceptPartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
@@ -232,10 +252,10 @@ public class PartnerManageController {
         ApiResponse apiResponse = null;
 
         try {
-            PartnerMaterDTO partnerMaterDTO = partnerService.acceptPartnerRequest(ptRequestQue);
+            PartnerInfoVo partnerInfoVo = partnerService.acceptPartnerRequest(ptRequestQue);
 
-            if (partnerMaterDTO != null) {
-                apiResponse = ApiResponse.createSuccessApiResponseWithObj(partnerMaterDTO);
+            if (partnerInfoVo != null) {
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(partnerInfoVo));
             } else {
                 apiResponse = ApiResponse.createFailApiResponseAuto();
             }

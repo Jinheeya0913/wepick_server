@@ -41,6 +41,7 @@ public enum ErrorCode {
      * Partner Error
      */
 
+    PARTNER_FAILED(200,"P000", "처리 중 실패하였습니다. 다시 시도 바랍니다."),
     PARTNER_NOT_EXIST(200,"P001", "등록된 파트너가 없습니다"),
     PARTNER_SELF(200,"P002", "다른 사용자의 코드를 입력해주시길 바랍니다."),
 
