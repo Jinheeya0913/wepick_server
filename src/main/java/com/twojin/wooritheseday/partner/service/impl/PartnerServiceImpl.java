@@ -59,25 +59,29 @@ public class PartnerServiceImpl implements PartnerService {
             partnerId = partnerMaterDTO.getPartnerUser2();
         }
 
+        UserDTO partnerInfo = userService.selectUserByUserId(partnerId);
         String partnerNm = userService.getUserNmByUserId(partnerId);
 
         if (partnerNm.isEmpty()) {
             throw new BusinessExceptionHandler(ErrorCode.PARTNER_FAILED.getMessage(), ErrorCode.PARTNER_FAILED);
         }
-
+        log.debug("[getPartnerInfoByUserId]>> partnerInfo.toString " + partnerInfo.toString());
 
 
         PartnerInfoVo partnerInfoVo = PartnerInfoVo.builder()
-                .partnerId(partnerId)
+                .partnerId(partnerInfo.getUserId())
+                .partnerNm(partnerInfo.getUsername())
+                .partnerImgUrl(partnerInfo.getUserImgUrl())
                 .partnerConnCd(partnerMaterDTO.getPartnerConnCd())
                 .partnerConnYn(partnerMaterDTO.isPartnerConnYn())
-                .partnerNm(partnerNm)
                 .regDt(partnerMaterDTO.getRegDt())
                 .build();
 
         if (partnerMaterDTO.getMeetDt() != null) {
             partnerInfoVo.setMeetDt(partnerMaterDTO.getMeetDt());
         }
+
+        log.debug("[getPartnerInfoByUserId]>> partnerInfoVo.toString " + partnerInfoVo.toString());
 
         return partnerInfoVo;
     }
@@ -271,9 +275,12 @@ public class PartnerServiceImpl implements PartnerService {
             throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_IMPOSIBLE.getMessage(), ErrorCode.PARTNER_REGIST_IMPOSIBLE);
         }
 
+        // 파트너 정보 가져오기
+        UserDTO partnerInfo = userService.selectUserByUserId(requesterId);
+
         partnerMaterDTO = PartnerMaterDTO.builder()
                 .partnerUser1(queueDTO.getPtAcceptorId())
-                .partnerUser2(queueDTO.getPtRequesterId())
+                .partnerUser2(partnerInfo.getUserId())
                 .partnerConnYn(true)
                 .partnerConnCd(queueDTO.getPtTempCd())
                 .build();
@@ -281,9 +288,16 @@ public class PartnerServiceImpl implements PartnerService {
         partnerMaterDTO = partnerMasterRepository.save(partnerMaterDTO);
         requestQueueDTO.setPtReqStatus("ACCEPTED");
 
-        String partnerNm = userService.getUserNmByUserId(requesterId);
 
-        return new PartnerInfoVo(partnerMaterDTO,partnerMaterDTO.getPartnerUser2(),partnerNm);
+        return PartnerInfoVo.builder()
+                .partnerNm(partnerInfo.getUserNm())
+                .partnerImgUrl(partnerInfo.getUserImgUrl())
+                .partnerId(partnerInfo.getUserId())
+                .partnerConnYn(partnerMaterDTO.isPartnerConnYn())
+                .partnerConnCd(partnerMaterDTO.getPartnerConnCd())
+                .meetDt(partnerMaterDTO.getMeetDt())
+                .regDt(partnerMaterDTO.getRegDt())
+                .build();
     }
 
     @Override

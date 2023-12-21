@@ -19,6 +19,8 @@ public class PartnerInfoVo {
 
     String partnerNm;
 
+    String partnerImgUrl;
+
     Date regDt; // 등록 날짜
 
     Date meetDt; // 만난 날짜
@@ -39,10 +41,12 @@ public class PartnerInfoVo {
     }
 
     @Builder
-    public PartnerInfoVo(boolean partnerConnYn, String partnerConnCd, String partnerId, Date regDt, Date meetDt, String partnerNm) {
+    public PartnerInfoVo(boolean partnerConnYn, String partnerConnCd, String partnerId, String partnerNm, String partnerImgUrl, Date regDt, Date meetDt) {
         this.partnerConnYn = partnerConnYn;
         this.partnerConnCd = partnerConnCd;
         this.partnerId = partnerId;
+        this.partnerNm = partnerNm;
+        this.partnerImgUrl = partnerImgUrl;
         this.regDt = regDt;
         this.meetDt = meetDt;
     }

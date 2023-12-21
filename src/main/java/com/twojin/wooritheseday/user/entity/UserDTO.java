@@ -95,7 +95,7 @@ public class UserDTO implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userId;
+        return userNm;
     }
 
     @Override
