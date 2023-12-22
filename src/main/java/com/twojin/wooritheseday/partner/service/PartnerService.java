@@ -1,11 +1,10 @@
 package com.twojin.wooritheseday.partner.service;
 
-import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.partner.entity.vo.PartnerInfoVo;
-import com.twojin.wooritheseday.partner.entity.vo.PartnerRequestInfoVo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -57,5 +56,11 @@ public interface PartnerService {
      */
 
     public boolean refusePartnerRequest( PartnerRequestQueueDTO queueDTO);
+
+    /**
+     * 9. 만난 날짜 변경
+     */
+
+    public PartnerInfoVo updatePartnerMeetDate(String userId, Date meetDt);
 
 }

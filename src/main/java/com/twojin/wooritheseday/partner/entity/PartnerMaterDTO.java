@@ -1,5 +1,6 @@
 package com.twojin.wooritheseday.partner.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.twojin.wooritheseday.common.utils.BooleanToYNConverterUtil;
 import lombok.Builder;
 import lombok.Data;
@@ -44,11 +45,14 @@ public class PartnerMaterDTO {
     String partnerUser2; // 연결된 사용자 2
 
     @CreationTimestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
     Date regDt; // 등록 날짜
 
     @UpdateTimestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
     Date upateDt;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
     Date meetDt; // 만난 날짜
 
     @Builder

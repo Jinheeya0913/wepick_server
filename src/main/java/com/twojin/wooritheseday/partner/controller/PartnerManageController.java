@@ -7,7 +7,6 @@ import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.partner.entity.vo.PartnerInfoVo;
@@ -22,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RequestMapping("/partner")
@@ -271,10 +272,44 @@ public class PartnerManageController {
 
     // Todo : 파트너 요청 거절하기
 
-
-
-
     // Todo : 파트너 삭제하기
+
+    // Todo : 파트너 만난 날짜 변경하기
+    @RequestMapping("setPartnerMeetDate")
+    public ResponseEntity<ApiResponse> setPartnerMeetDate(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
+                                                          @RequestBody String  meetDt) {
+        log.debug("[updatePartnerMeetDt] >> Start");
+
+        ApiResponse apiResponse = null;
+        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
+
+        log.debug("[updatePartnerMeetDt] >> meetDt : " + meetDt);
+        log.debug("[updatePartnerMeetDt] >> userId : " + userId);
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date parseDate = simpleDateFormat.parse(meetDt);
+
+            PartnerInfoVo resp= partnerService.updatePartnerMeetDate(userId, parseDate);
+
+            if (resp!=null) {
+                log.debug("[updatePartnerMeetDt] >> 성공");
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(resp));
+            } else {
+                throw new BusinessExceptionHandler(ErrorCode.PARTNER_UPDATE_MEETDT.getMessage(), ErrorCode.PARTNER_UPDATE_MEETDT);
+            }
+
+        } catch (ParseException e) {
+            log.error("[updatePartnerMeetDt] >> parseError : "+ meetDt , e);
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        } catch (Exception e) {
+            log.error("[updatePartnerMeetDt] >> Exceptio : ", e);
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        }
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+
 
 
 }

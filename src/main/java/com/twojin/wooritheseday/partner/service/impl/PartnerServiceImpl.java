@@ -317,4 +317,23 @@ public class PartnerServiceImpl implements PartnerService {
         requestQueueDTO.setPtReqStatus(ProgressConstants.REFUESED);
         return true;
     }
+
+    @Transactional
+    @Override
+    public PartnerInfoVo updatePartnerMeetDate(String userId, Date meetDt) {
+        UserDTO partnerDto = null;
+
+        PartnerMaterDTO masterDto = partnerMasterRepository.findMyPartnerInfoByUserId(userId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.PARTNER_FAILED.getMessage(), ErrorCode.PARTNER_FAILED));
+        masterDto.setMeetDt(meetDt);
+
+        String partnerId = PartnerUtils.getPartnerIdFromMasterDTO(masterDto, userId);
+
+        if (partnerId != null) {
+            partnerDto = userService.selectUserByUserId(partnerId);
+            return PartnerInfoVo.initPartnerInfoVo(partnerDto, masterDto);
+        } else {
+            return null;
+        }
+    }
 }

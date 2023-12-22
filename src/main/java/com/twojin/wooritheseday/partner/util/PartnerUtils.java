@@ -1,4 +1,5 @@
 package com.twojin.wooritheseday.partner.util;
+import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
 import com.twojin.wooritheseday.user.util.StringUtils;
 
 public class PartnerUtils {
@@ -11,6 +12,19 @@ public class PartnerUtils {
 
     public static void validExistProgressRequest() {
 
+    }
+
+    public static String getPartnerIdFromMasterDTO(PartnerMaterDTO masterDTO, String userId) {
+        String partnerUser1 = masterDTO.getPartnerUser1();
+        String partnerUser2 = masterDTO.getPartnerUser2();
+
+        if (!partnerUser1.equals(userId) && partnerUser2.equals(userId)) {
+            return masterDTO.getPartnerUser1();
+        } else if (!partnerUser2.equals(userId) && partnerUser1.equals(userId)) {
+            return masterDTO.getPartnerUser2();
+        } else {
+            return null;
+        }
     }
 
 }

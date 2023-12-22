@@ -1,6 +1,7 @@
 package com.twojin.wooritheseday.partner.entity.vo;
 
 import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
+import com.twojin.wooritheseday.user.entity.UserDTO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,4 +51,17 @@ public class PartnerInfoVo {
         this.regDt = regDt;
         this.meetDt = meetDt;
     }
+
+    public static PartnerInfoVo initPartnerInfoVo(UserDTO partnerInfo, PartnerMaterDTO partnerMaterDTO) {
+        return PartnerInfoVo.builder()
+                .partnerNm(partnerInfo.getUserNm())
+                .partnerImgUrl(partnerInfo.getUserImgUrl())
+                .partnerId(partnerInfo.getUserId())
+                .partnerConnYn(partnerMaterDTO.isPartnerConnYn())
+                .partnerConnCd(partnerMaterDTO.getPartnerConnCd())
+                .meetDt(partnerMaterDTO.getMeetDt())
+                .regDt(partnerMaterDTO.getRegDt())
+                .build();
+    }
+
 }
