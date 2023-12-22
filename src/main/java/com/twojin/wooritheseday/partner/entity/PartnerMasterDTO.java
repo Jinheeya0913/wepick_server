@@ -24,7 +24,7 @@ import java.util.Date;
 )
 @Data
 @NoArgsConstructor
-public class PartnerMaterDTO {
+public class PartnerMasterDTO {
 
     // 파트너 Cd
     @Id
@@ -38,10 +38,16 @@ public class PartnerMaterDTO {
     @Column
     String partnerConnCd; // 바트너 연결 코드
 
-    @Column(name = "partner_user_1")
+    @Column(name = "partner_user_1",nullable = false)
     String partnerUser1; // 연결된 사용자 1
 
-    @Column(name = "partner_user_2")
+    @Column(name = "partner_user_1_alias",nullable = true)
+    String partnerUser1_alias;
+
+    @Column(name = "partner_user_2_alias", nullable = true)
+    String partnerUser2_alias;
+
+    @Column(name = "partner_user_2", nullable = false)
     String partnerUser2; // 연결된 사용자 2
 
     @CreationTimestamp
@@ -56,12 +62,15 @@ public class PartnerMaterDTO {
     Date meetDt; // 만난 날짜
 
     @Builder
-    public PartnerMaterDTO(Long partnerCd, boolean partnerConnYn, String partnerConnCd, String partnerUser1, String partnerUser2, Date regDt, Date upateDt, Date meetDt) {
+    public PartnerMasterDTO(Long partnerCd, boolean partnerConnYn, String partnerConnCd, String partnerUser1, String partnerUser2,
+            String partnerUser1_alias, String partnerUser2_alias, Date regDt, Date upateDt, Date meetDt) {
         this.partnerCd = partnerCd;
         this.partnerConnYn = partnerConnYn;
         this.partnerConnCd = partnerConnCd;
         this.partnerUser1 = partnerUser1;
         this.partnerUser2 = partnerUser2;
+        this.partnerUser1_alias = partnerUser1_alias;
+        this.partnerUser2_alias = partnerUser2_alias;
         this.regDt = regDt;
         this.upateDt = upateDt;
         this.meetDt = meetDt;

@@ -1,6 +1,6 @@
 package com.twojin.wooritheseday.partner.entity.vo;
 
-import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerMasterDTO;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import lombok.Builder;
 import lombok.Data;
@@ -26,14 +26,14 @@ public class PartnerInfoVo {
 
     Date meetDt; // 만난 날짜
 
-    public PartnerInfoVo (PartnerMaterDTO masterDTO, String partnerId) {
+    public PartnerInfoVo (PartnerMasterDTO masterDTO, String partnerId) {
         this.partnerConnCd = masterDTO.getPartnerConnCd();
         this.partnerId = partnerId;
         this.regDt = masterDTO.getRegDt();
         this.meetDt = masterDTO.getMeetDt();
     }
 
-    public PartnerInfoVo (PartnerMaterDTO masterDTO, String partnerId, String partnerNm) {
+    public PartnerInfoVo (PartnerMasterDTO masterDTO, String partnerId, String partnerNm) {
         this.partnerConnCd = masterDTO.getPartnerConnCd();
         this.partnerConnYn = masterDTO.isPartnerConnYn();
         this.partnerNm = partnerNm;
@@ -52,15 +52,15 @@ public class PartnerInfoVo {
         this.meetDt = meetDt;
     }
 
-    public static PartnerInfoVo initPartnerInfoVo(UserDTO partnerInfo, PartnerMaterDTO partnerMaterDTO) {
+    public static PartnerInfoVo initPartnerInfoVo(UserDTO partnerInfo, PartnerMasterDTO partnerMasterDTO) {
         return PartnerInfoVo.builder()
                 .partnerNm(partnerInfo.getUserNm())
                 .partnerImgUrl(partnerInfo.getUserImgUrl())
                 .partnerId(partnerInfo.getUserId())
-                .partnerConnYn(partnerMaterDTO.isPartnerConnYn())
-                .partnerConnCd(partnerMaterDTO.getPartnerConnCd())
-                .meetDt(partnerMaterDTO.getMeetDt())
-                .regDt(partnerMaterDTO.getRegDt())
+                .partnerConnYn(partnerMasterDTO.isPartnerConnYn())
+                .partnerConnCd(partnerMasterDTO.getPartnerConnCd())
+                .meetDt(partnerMasterDTO.getMeetDt())
+                .regDt(partnerMasterDTO.getRegDt())
                 .build();
     }
 

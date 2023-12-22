@@ -1,5 +1,5 @@
 package com.twojin.wooritheseday.partner.util;
-import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerMasterDTO;
 import com.twojin.wooritheseday.user.util.StringUtils;
 
 public class PartnerUtils {
@@ -14,7 +14,7 @@ public class PartnerUtils {
 
     }
 
-    public static String getPartnerIdFromMasterDTO(PartnerMaterDTO masterDTO, String userId) {
+    public static String getPartnerIdFromMasterDTO(PartnerMasterDTO masterDTO, String userId) {
         String partnerUser1 = masterDTO.getPartnerUser1();
         String partnerUser2 = masterDTO.getPartnerUser2();
 

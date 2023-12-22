@@ -4,7 +4,7 @@ import com.twojin.wooritheseday.common.constant.ProgressConstants;
 import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.partner.entity.PartnerMaterDTO;
+import com.twojin.wooritheseday.partner.entity.PartnerMasterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.partner.entity.vo.PartnerInfoVo;
@@ -47,16 +47,16 @@ public class PartnerServiceImpl implements PartnerService {
 
     @Override
     public PartnerInfoVo getPartnerInfoByUserId(String userId) {
-        PartnerMaterDTO partnerMaterDTO = partnerMasterRepository.findMyPartnerInfoByUserId(userId).orElse(null);
+        PartnerMasterDTO partnerMasterDTO = partnerMasterRepository.findMyPartnerInfoByUserId(userId).orElse(null);
 
         String partnerId = null;
 
-        if(partnerMaterDTO == null) return null;
+        if(partnerMasterDTO == null) return null;
 
-        if (!partnerMaterDTO.getPartnerUser1().equals(userId)) {
-            partnerId = partnerMaterDTO.getPartnerUser1();
+        if (!partnerMasterDTO.getPartnerUser1().equals(userId)) {
+            partnerId = partnerMasterDTO.getPartnerUser1();
         } else {
-            partnerId = partnerMaterDTO.getPartnerUser2();
+            partnerId = partnerMasterDTO.getPartnerUser2();
         }
 
         UserDTO partnerInfo = userService.selectUserByUserId(partnerId);
@@ -72,13 +72,13 @@ public class PartnerServiceImpl implements PartnerService {
                 .partnerId(partnerInfo.getUserId())
                 .partnerNm(partnerInfo.getUsername())
                 .partnerImgUrl(partnerInfo.getUserImgUrl())
-                .partnerConnCd(partnerMaterDTO.getPartnerConnCd())
-                .partnerConnYn(partnerMaterDTO.isPartnerConnYn())
-                .regDt(partnerMaterDTO.getRegDt())
+                .partnerConnCd(partnerMasterDTO.getPartnerConnCd())
+                .partnerConnYn(partnerMasterDTO.isPartnerConnYn())
+                .regDt(partnerMasterDTO.getRegDt())
                 .build();
 
-        if (partnerMaterDTO.getMeetDt() != null) {
-            partnerInfoVo.setMeetDt(partnerMaterDTO.getMeetDt());
+        if (partnerMasterDTO.getMeetDt() != null) {
+            partnerInfoVo.setMeetDt(partnerMasterDTO.getMeetDt());
         }
 
         log.debug("[getPartnerInfoByUserId]>> partnerInfoVo.toString " + partnerInfoVo.toString());
@@ -253,7 +253,7 @@ public class PartnerServiceImpl implements PartnerService {
     @Transactional
     public PartnerInfoVo acceptPartnerRequest(PartnerRequestQueueDTO queueDTO) {
         PartnerRequestQueueDTO requestQueueDTO = null;
-        PartnerMaterDTO partnerMaterDTO = null;
+        PartnerMasterDTO partnerMasterDTO = null;
 
         requestQueueDTO = partnerReqQueueRepository.findByPtTempCdAndPtRequesterId(queueDTO.getPtTempCd(), queueDTO.getPtRequesterId())
                 .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.PARTNER_REQUEST_SELECT_FAIL.getMessage(), ErrorCode.PARTNER_REQUEST_SELECT_FAIL));
@@ -268,8 +268,8 @@ public class PartnerServiceImpl implements PartnerService {
         String acceptorId = queueDTO.getPtAcceptorId();
 
         // db에 등록돼 있는지 확인
-        PartnerMaterDTO requesterInfo = partnerMasterRepository.findMyPartnerInfoByUserId(requesterId).orElse(null);
-        PartnerMaterDTO acceptorInfo = partnerMasterRepository.findMyPartnerInfoByUserId(acceptorId).orElse(null);
+        PartnerMasterDTO requesterInfo = partnerMasterRepository.findMyPartnerInfoByUserId(requesterId).orElse(null);
+        PartnerMasterDTO acceptorInfo = partnerMasterRepository.findMyPartnerInfoByUserId(acceptorId).orElse(null);
 
         if (requesterInfo != null || acceptorInfo != null) {
             throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_IMPOSIBLE.getMessage(), ErrorCode.PARTNER_REGIST_IMPOSIBLE);
@@ -278,14 +278,14 @@ public class PartnerServiceImpl implements PartnerService {
         // 파트너 정보 가져오기
         UserDTO partnerInfo = userService.selectUserByUserId(requesterId);
 
-        partnerMaterDTO = PartnerMaterDTO.builder()
+        partnerMasterDTO = PartnerMasterDTO.builder()
                 .partnerUser1(queueDTO.getPtAcceptorId())
                 .partnerUser2(partnerInfo.getUserId())
                 .partnerConnYn(true)
                 .partnerConnCd(queueDTO.getPtTempCd())
                 .build();
 
-        partnerMaterDTO = partnerMasterRepository.save(partnerMaterDTO);
+        partnerMasterDTO = partnerMasterRepository.save(partnerMasterDTO);
         requestQueueDTO.setPtReqStatus("ACCEPTED");
 
 
@@ -293,10 +293,10 @@ public class PartnerServiceImpl implements PartnerService {
                 .partnerNm(partnerInfo.getUserNm())
                 .partnerImgUrl(partnerInfo.getUserImgUrl())
                 .partnerId(partnerInfo.getUserId())
-                .partnerConnYn(partnerMaterDTO.isPartnerConnYn())
-                .partnerConnCd(partnerMaterDTO.getPartnerConnCd())
-                .meetDt(partnerMaterDTO.getMeetDt())
-                .regDt(partnerMaterDTO.getRegDt())
+                .partnerConnYn(partnerMasterDTO.isPartnerConnYn())
+                .partnerConnCd(partnerMasterDTO.getPartnerConnCd())
+                .meetDt(partnerMasterDTO.getMeetDt())
+                .regDt(partnerMasterDTO.getRegDt())
                 .build();
     }
 
@@ -323,7 +323,7 @@ public class PartnerServiceImpl implements PartnerService {
     public PartnerInfoVo updatePartnerMeetDate(String userId, Date meetDt) {
         UserDTO partnerDto = null;
 
-        PartnerMaterDTO masterDto = partnerMasterRepository.findMyPartnerInfoByUserId(userId)
+        PartnerMasterDTO masterDto = partnerMasterRepository.findMyPartnerInfoByUserId(userId)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.PARTNER_FAILED.getMessage(), ErrorCode.PARTNER_FAILED));
         masterDto.setMeetDt(meetDt);
 
