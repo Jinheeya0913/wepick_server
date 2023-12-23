@@ -1,5 +1,6 @@
 package com.twojin.wooritheseday.partner.service;
 
+import com.twojin.wooritheseday.partner.entity.PartnerMasterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.partner.entity.vo.PartnerInfoVo;
@@ -60,7 +61,18 @@ public interface PartnerService {
     /**
      * 9. 만난 날짜 변경
      */
-
     public PartnerInfoVo updatePartnerMeetDate(String userId, Date meetDt);
+
+    /**
+     * 10. 파트너 별칭 수정
+     */
+    public PartnerInfoVo updatePartnerAlias(String userId, String newAlias);
+
+    /**
+     * 11. partner Info Select
+     */
+    public PartnerMasterDTO selectPartnerMasterInfo(String userId);
+
+
 
 }

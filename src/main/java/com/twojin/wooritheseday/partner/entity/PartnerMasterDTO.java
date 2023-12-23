@@ -1,7 +1,9 @@
 package com.twojin.wooritheseday.partner.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.twojin.wooritheseday.common.codes.ErrorCode;
 import com.twojin.wooritheseday.common.utils.BooleanToYNConverterUtil;
+import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -75,4 +77,15 @@ public class PartnerMasterDTO {
         this.upateDt = upateDt;
         this.meetDt = meetDt;
     }
+
+    public void setAliasByGubun(String alias, int gubun) {
+        if (gubun == 1) {
+            this.partnerUser1_alias = alias;
+        } else if (gubun == 2) {
+            this.partnerUser2_alias = alias;
+        } else {
+            throw new BusinessExceptionHandler(ErrorCode.PARTNER_UPDATE_ALIAS.getMessage(), ErrorCode.PARTNER_UPDATE_ALIAS);
+        }
+    }
+
 }

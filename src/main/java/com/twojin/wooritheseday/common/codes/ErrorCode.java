@@ -50,10 +50,10 @@ public enum ErrorCode {
     PARTNER_REQUEST_USED_TEMPCD(200, "P004", "요청 실패하였습니다."),
     PARTNER_REQUEST_SELECT_FAIL(200, "P005", "요청 목록을 불러오던 중 실패하였습니다."),
     PARTNER_REQUEST_REFUSE_FAIL(200, "P006", "요청 거부를 실패하였습니다. 다시 시도 바랍니다."),
-
     PARTNER_REGIST_IMPOSIBLE(200, "P007", "등록 실패하였습니다. 파트너 초기화가 필요합니다"),
-
     PARTNER_UPDATE_MEETDT(200, "P008", "변경 실패하였습니다. 다시 시도해주시길 바랍니다."),
+
+    PARTNER_UPDATE_ALIAS(200, "P009", "변경 실패하였습니다. 다시 시도해주시길 바랍니다."),
     PARTNER_REGIST_QUEUE_FAIL(200,"P001", "등록 실패하였습니다"),
     PARTNER_REGIST_NON_EXIST(200,"P001", "등록돼 있지 않은 코드입니다"),
 

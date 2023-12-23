@@ -44,6 +44,13 @@ public class PartnerServiceImpl implements PartnerService {
     @Autowired
     UserService userService;
 
+    @Override
+    public PartnerMasterDTO selectPartnerMasterInfo(String userId) {
+        PartnerMasterDTO partnerMasterDTO = partnerMasterRepository.findMyPartnerInfoByUserId(userId)
+                .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.PARTNER_NOT_EXIST.getMessage(), ErrorCode.PARTNER_NOT_EXIST));
+
+        return partnerMasterDTO;
+    }
 
     @Override
     public PartnerInfoVo getPartnerInfoByUserId(String userId) {
@@ -325,6 +332,7 @@ public class PartnerServiceImpl implements PartnerService {
 
         PartnerMasterDTO masterDto = partnerMasterRepository.findMyPartnerInfoByUserId(userId)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.PARTNER_FAILED.getMessage(), ErrorCode.PARTNER_FAILED));
+
         masterDto.setMeetDt(meetDt);
 
         String partnerId = PartnerUtils.getPartnerIdFromMasterDTO(masterDto, userId);
@@ -333,7 +341,35 @@ public class PartnerServiceImpl implements PartnerService {
             partnerDto = userService.selectUserByUserId(partnerId);
             return PartnerInfoVo.initPartnerInfoVo(partnerDto, masterDto);
         } else {
-            return null;
+            throw new BusinessExceptionHandler(ErrorCode.PARTNER_UPDATE_MEETDT.getMessage(), ErrorCode.PARTNER_UPDATE_MEETDT);
         }
     }
+    @Override
+    @Transactional
+    public PartnerInfoVo updatePartnerAlias(String userId, String newAlias) {
+
+        PartnerMasterDTO masterDTO= partnerMasterRepository.findMyPartnerInfoByUserId(userId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.PARTNER_NOT_EXIST.getMessage(), ErrorCode.PARTNER_NOT_EXIST));
+
+        // 구분에 따른 파트너 별명 설정
+
+        int partnerGubun = PartnerUtils.getGubunNumberByUserId(masterDTO, userId);
+        log.debug("[PartnerServiceImpl] >> updatePartnerAlias :: partnerGubun =" + partnerGubun);
+        masterDTO.setAliasByGubun(newAlias, partnerGubun);
+
+        log.debug("[PartnerServiceImpl] >> updatePartnerAlias :: masterDto.toString" + masterDTO.toString());
+
+        String partnerId = PartnerUtils.getPartnerIdFromMasterDTO(masterDTO, userId);
+        UserDTO partnerInfo = null;
+
+        try {
+             partnerInfo = userService.selectUserByUserId(partnerId);
+        } catch (BusinessExceptionHandler e) {
+            throw new BusinessExceptionHandler(ErrorCode.PARTNER_UPDATE_ALIAS.getMessage(), ErrorCode.PARTNER_UPDATE_ALIAS);
+        }
+
+        return PartnerInfoVo.initPartnerInfoVo(partnerInfo, masterDTO);
+    }
+
+
 }

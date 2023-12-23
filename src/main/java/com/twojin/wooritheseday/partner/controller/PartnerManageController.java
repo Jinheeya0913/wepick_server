@@ -7,9 +7,11 @@ import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
+import com.twojin.wooritheseday.partner.entity.PartnerMasterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.partner.entity.vo.PartnerInfoVo;
+import com.twojin.wooritheseday.partner.util.PartnerUtils;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.user.service.UserService;
@@ -227,24 +229,12 @@ public class PartnerManageController {
 
 
     /**
-     * {
-     *     "result": "SUCCESS",
-     *     "resultCode": "101",
-     *     "resultMsg": "성공하였습니다",
-     *     "resultData": {
-     *         "partnerConnYn": false,
-     *         "partnerConnCd": "e15yo373p3un58y5",
-     *         "partnerId": "taran0913",
-     *         "partnerName": null,
-     *         "regDt": "2023-12-19T07:01:39.384+00:00",
-     *         "meetDt": null
-     *     }
      * }
      * @param accessHeader
      * @param ptRequestQue
      * @return
      */
-    // Todo : 파트너 요청 수락하기
+    // 파트너 요청 수락하기
     @RequestMapping("/acceptPartnerRequest")
     public ResponseEntity<ApiResponse> acceptPartnerRequest(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
                                                             @RequestBody PartnerRequestQueueDTO ptRequestQue) {
@@ -274,7 +264,7 @@ public class PartnerManageController {
 
     // Todo : 파트너 삭제하기
 
-    // Todo : 파트너 만난 날짜 변경하기
+    // 파트너 만난 날짜 변경하기
     @RequestMapping("setPartnerMeetDate")
     public ResponseEntity<ApiResponse> setPartnerMeetDate(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
                                                           @RequestBody String  meetDt) {
@@ -291,12 +281,8 @@ public class PartnerManageController {
 
             PartnerInfoVo resp= partnerService.updatePartnerMeetDate(userId, parseDate);
 
-            if (resp!=null) {
-                log.debug("[updatePartnerMeetDt] >> 성공");
-                apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(resp));
-            } else {
-                throw new BusinessExceptionHandler(ErrorCode.PARTNER_UPDATE_MEETDT.getMessage(), ErrorCode.PARTNER_UPDATE_MEETDT);
-            }
+            log.debug("[updatePartnerMeetDt] >> 성공");
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(resp));
 
         } catch (ParseException e) {
             log.error("[updatePartnerMeetDt] >> parseError : "+ meetDt , e);
@@ -309,7 +295,26 @@ public class PartnerManageController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // 파트너 애칭 설정하기
+    @RequestMapping("setPartnerAlias")
+    public ResponseEntity<ApiResponse> setPartnerAlias(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
+                                                       @RequestBody PartnerInfoVo partnerInfoVo){
+        log.debug("[PartnerManageController] >> setPartnerAlias ::  START");
 
+        ApiResponse apiResponse = null;
+        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
+        String partnerAlias = partnerInfoVo.getPartnerAlias();
 
+        try {
+            PartnerInfoVo resultVo= partnerService.updatePartnerAlias(userId, partnerAlias);
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(resultVo));
+        } catch (Exception e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        }
+        
+        log.debug("[PartnerManageController] >> setPartnerAlias :: END");
+
+        return ResponseEntity.ok(apiResponse);
+    }
 
 }
