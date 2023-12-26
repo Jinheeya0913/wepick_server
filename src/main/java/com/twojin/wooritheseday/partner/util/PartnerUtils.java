@@ -10,10 +10,6 @@ public class PartnerUtils {
         return randomCd;
     }
 
-    public static void validExistProgressRequest() {
-
-    }
-
     public static String getPartnerIdFromMasterDTO(PartnerMasterDTO masterDTO, String userId) {
         String partnerUser1 = masterDTO.getPartnerUser1();
         String partnerUser2 = masterDTO.getPartnerUser2();
@@ -38,6 +34,21 @@ public class PartnerUtils {
         } else {
             return 0;
         }
+    }
+
+    public static String getPartnerAliasByPartnerId(PartnerMasterDTO masterDTO, String partnerId) {
+
+        String partnerUser1 = masterDTO.getPartnerUser1();
+        String partnerUser2 = masterDTO.getPartnerUser2();
+
+        if (!partnerUser1.equals(partnerId)&& partnerUser2.equals(partnerId)) {
+            return masterDTO.getPartnerUser2_alias();
+        } else if (partnerUser1.equals(partnerId) && !partnerUser2.equals(partnerId) ) {
+            return masterDTO.getPartnerUser1_alias();
+        } else {
+            return null;
+        }
+
     }
 
 }

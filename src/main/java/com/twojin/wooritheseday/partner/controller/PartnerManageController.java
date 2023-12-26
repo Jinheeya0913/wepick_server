@@ -298,12 +298,11 @@ public class PartnerManageController {
     // 파트너 애칭 설정하기
     @RequestMapping("setPartnerAlias")
     public ResponseEntity<ApiResponse> setPartnerAlias(@RequestHeader(value = AuthConstants.ACCESS_HEADER) String accessHeader,
-                                                       @RequestBody PartnerInfoVo partnerInfoVo){
+                                                       @RequestBody String  partnerAlias){
         log.debug("[PartnerManageController] >> setPartnerAlias ::  START");
 
         ApiResponse apiResponse = null;
         String userId = TokenUtil.getUserIdFromHeader(accessHeader);
-        String partnerAlias = partnerInfoVo.getPartnerAlias();
 
         try {
             PartnerInfoVo resultVo= partnerService.updatePartnerAlias(userId, partnerAlias);

@@ -72,13 +72,17 @@ public class PartnerServiceImpl implements PartnerService {
         if (partnerNm.isEmpty()) {
             throw new BusinessExceptionHandler(ErrorCode.PARTNER_FAILED.getMessage(), ErrorCode.PARTNER_FAILED);
         }
+
         log.debug("[getPartnerInfoByUserId]>> partnerInfo.toString " + partnerInfo.toString());
+
+        String partnerAlias = PartnerUtils.getPartnerAliasByPartnerId(partnerMasterDTO, partnerId);
 
 
         PartnerInfoVo partnerInfoVo = PartnerInfoVo.builder()
                 .partnerId(partnerInfo.getUserId())
                 .partnerNm(partnerInfo.getUsername())
                 .partnerImgUrl(partnerInfo.getUserImgUrl())
+                .partnerAlias(partnerAlias)
                 .partnerConnCd(partnerMasterDTO.getPartnerConnCd())
                 .partnerConnYn(partnerMasterDTO.isPartnerConnYn())
                 .regDt(partnerMasterDTO.getRegDt())
