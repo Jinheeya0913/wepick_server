@@ -42,6 +42,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 //                "/user/me",
                 "/testLogin/login",
                 "/testLogin/join",
+                "/test/initTestAccount",
                 "/auth/validToken",
                 "/auth/login",
                 "/file/me/getProfileImg"
