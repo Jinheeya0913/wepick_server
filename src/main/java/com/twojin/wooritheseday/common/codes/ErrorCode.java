@@ -60,6 +60,13 @@ public enum ErrorCode {
     PARTNER_REGIST_CANT_USE(200,"P001", "사용 불가능한 코드입니다"),
     PARTNER_REGIST_NOT_FOUND(200,"P001", "조회되지 않는 파트너입니다."),
 
+    /**
+     * EstimateError
+     */
+
+    ESTIMATE_WRONG_FORM(200,"E001", "올바르지 않은 양식입니다. 다시 작성해주세요"),
+
+
 
 
     /**
