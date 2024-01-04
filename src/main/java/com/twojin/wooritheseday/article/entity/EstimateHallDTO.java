@@ -26,21 +26,29 @@ public class EstimateHallDTO {
     private HallDTO hallDTO;
     private String hallName;
     private String placeName;
+    private String writerId;
     private int placeFee;
     private int foodFee;
     private int guaranteedPrsnl;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd" , timezone = "Asia/Seoul")
     private Date bookingDate;
     private String bookingTime;
     private String memo;
     private boolean includeBeverage;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
+    private Date registDt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
+    private Date updateDt;
+
     @Builder
-    public EstimateHallDTO(Long estimateHallCd, HallDTO hallDTO, String hallName, String placeName, int placeFee, int foodFee, int guaranteedPrsnl, Date bookingDate, String bookingTime, String memo, boolean includeBeverage) {
+    public EstimateHallDTO(Long estimateHallCd, HallDTO hallDTO, String hallName, String placeName, String writerId, int placeFee, int foodFee, int guaranteedPrsnl, Date bookingDate, String bookingTime, String memo, boolean includeBeverage, Date registDt, Date updateDt) {
         this.estimateHallCd = estimateHallCd;
         this.hallDTO = hallDTO;
         this.hallName = hallName;
         this.placeName = placeName;
+        this.writerId = writerId;
         this.placeFee = placeFee;
         this.foodFee = foodFee;
         this.guaranteedPrsnl = guaranteedPrsnl;
@@ -48,5 +56,7 @@ public class EstimateHallDTO {
         this.bookingTime = bookingTime;
         this.memo = memo;
         this.includeBeverage = includeBeverage;
+        this.registDt = registDt;
+        this.updateDt = updateDt;
     }
 }

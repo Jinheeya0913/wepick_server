@@ -1,6 +1,7 @@
 package com.twojin.wooritheseday.article.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Data
 @Table(name = "woori_hall_master")
 public class HallDTO {
 

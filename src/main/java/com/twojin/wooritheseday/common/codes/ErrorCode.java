@@ -66,6 +66,8 @@ public enum ErrorCode {
 
     ESTIMATE_WRONG_FORM(200,"E001", "올바르지 않은 양식입니다. 다시 작성해주세요"),
 
+    ESTIMATE_EXIST_ALREADY(200,"E002", "이미 작성한 홀의 견적입니다."),
+
 
 
 

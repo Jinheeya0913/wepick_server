@@ -1,10 +1,10 @@
 package com.twojin.wooritheseday.article.service;
 
-//import com.twojin.wooritheseday.article.entity.EstimateHallDTO;
+import com.twojin.wooritheseday.article.entity.EstimateHallDTO;
 
 public interface EstimateService {
 
 
-//    boolean writeHallEstimate(EstimateHallDTO hallEstimateVO);
+    boolean writeHallEstimate(EstimateHallDTO hallEstimateVO);
 
 }
