@@ -20,7 +20,7 @@ public class EstimateServiceImpl implements EstimateService {
     public boolean writeHallEstimate(EstimateHallDTO hallEstimateVO) {
 
 
-        EstimateHallDTO alreadyExist = estimateHallRepository.findByWriterIdAndHallDTO_HallCd(hallEstimateVO.getWriterId(),hallEstimateVO.getHallDTO().getHallCd()).orElse(null);
+        EstimateHallDTO alreadyExist = estimateHallRepository.findByWriterIdAndPlaceInfo_placeCd(hallEstimateVO.getWriterId(),hallEstimateVO.getPlaceInfo().getPlaceCd()).orElse(null);
 
         if (alreadyExist != null) {
             throw new BusinessExceptionHandler(ErrorCode.ESTIMATE_EXIST_ALREADY.getMessage(), ErrorCode.ESTIMATE_EXIST_ALREADY);

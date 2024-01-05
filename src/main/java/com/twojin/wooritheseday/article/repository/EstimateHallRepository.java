@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface EstimateHallRepository extends JpaRepository<EstimateHallDTO, Long> {
 
-    public Optional<EstimateHallDTO> findByWriterIdAndHallDTO_HallCd(String writerId, Long hallCd);
+    public Optional<EstimateHallDTO> findByWriterIdAndPlaceInfo_placeCd(String writerId, Long placeCd);
 
 }

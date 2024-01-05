@@ -2,6 +2,7 @@ package com.twojin.wooritheseday.article.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  * 예식장 Entity
  */
 @Entity
+@Data
 @Table(name = "woori_place_master")
 public class PlaceDTO {
 

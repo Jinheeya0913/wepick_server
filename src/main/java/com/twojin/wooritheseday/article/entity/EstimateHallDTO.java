@@ -22,8 +22,8 @@ public class EstimateHallDTO {
 
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name="hall_cd",referencedColumnName = "hall_cd")
-    private HallDTO hallDTO;
+    @JoinColumn(name="place_cd",referencedColumnName = "place_cd")
+    private PlaceDTO placeInfo;
     private String hallName;
     private String placeName;
     private String writerId;
@@ -43,9 +43,9 @@ public class EstimateHallDTO {
     private Date updateDt;
 
     @Builder
-    public EstimateHallDTO(Long estimateHallCd, HallDTO hallDTO, String hallName, String placeName, String writerId, int placeFee, int foodFee, int guaranteedPrsnl, Date bookingDate, String bookingTime, String memo, boolean includeBeverage, Date registDt, Date updateDt) {
+    public EstimateHallDTO(Long estimateHallCd, PlaceDTO placeInfo, String hallName, String placeName, String writerId, int placeFee, int foodFee, int guaranteedPrsnl, Date bookingDate, String bookingTime, String memo, boolean includeBeverage, Date registDt, Date updateDt) {
         this.estimateHallCd = estimateHallCd;
-        this.hallDTO = hallDTO;
+        this.placeInfo = placeInfo;
         this.hallName = hallName;
         this.placeName = placeName;
         this.writerId = writerId;
