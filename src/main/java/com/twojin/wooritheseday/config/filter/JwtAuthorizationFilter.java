@@ -3,7 +3,7 @@ package com.twojin.wooritheseday.config.filter;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
-import com.twojin.wooritheseday.common.utils.ConvertModules;
+import com.twojin.wooritheseday.common.utils.JsonConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -106,7 +106,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 //            JSONObject jsonObject = jsonResponseWrapper(e);
             ApiResponse apiResponse = buildErrorResponse(e);
 
-            JSONObject jsonObject = ConvertModules.dtoToJsonObj(apiResponse);
+            JSONObject jsonObject = JsonConvertModules.dtoToJsonObj(apiResponse);
             jsonObject.put("status", apiResponse.getResultCode());
             printWriter.print(jsonObject);
             printWriter.flush();

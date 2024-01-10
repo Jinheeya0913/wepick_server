@@ -5,7 +5,7 @@ import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.file.service.FileUserService;
 import com.twojin.wooritheseday.auth.service.TokenService;
-import com.twojin.wooritheseday.common.utils.ConvertModules;
+import com.twojin.wooritheseday.common.utils.JsonConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.user.entity.UserDTO;
@@ -48,7 +48,7 @@ public class UserController {
             } else {
                 throw new BusinessExceptionHandler(ErrorCode.USER_NOT_FOUND.getMessage(), ErrorCode.USER_NOT_FOUND);
             }
-            JSONObject obj = ConvertModules.dtoToJsonObj(user);
+            JSONObject obj = JsonConvertModules.dtoToJsonObj(user);
 
             apiResponse = ApiResponse.createSuccessApiResponseWithObj(obj);
 
@@ -98,7 +98,7 @@ public class UserController {
 
             userDTO = userService.loadMyAccountByUserId(accessUserId);
 
-            JSONObject obj = ConvertModules.dtoToJsonObj(userDTO);
+            JSONObject obj = JsonConvertModules.dtoToJsonObj(userDTO);
 
             apiResponse = ApiResponse.createSuccessApiResponseWithObj(obj);
         } catch (BusinessExceptionHandler e) {

@@ -4,7 +4,7 @@ package com.twojin.wooritheseday.file.controller;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
-import com.twojin.wooritheseday.common.utils.ConvertModules;
+import com.twojin.wooritheseday.common.utils.JsonConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.file.dto.vo.FileVo;
@@ -55,7 +55,7 @@ public class FileUserController {
             user = userService.updateUserImgUrl(fileName, userId);
 
             if (user != null) {
-                jsonObject = ConvertModules.dtoToJsonObj(user);
+                jsonObject = JsonConvertModules.dtoToJsonObj(user);
             } else {
                 throw new BusinessExceptionHandler(ErrorCode.USER_PROFILE_IMG_UPLOAD.getMessage(), ErrorCode.USER_PROFILE_IMG_UPLOAD);
             }

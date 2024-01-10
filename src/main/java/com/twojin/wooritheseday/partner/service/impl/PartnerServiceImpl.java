@@ -2,7 +2,7 @@ package com.twojin.wooritheseday.partner.service.impl;
 
 import com.twojin.wooritheseday.common.constant.ProgressConstants;
 import com.twojin.wooritheseday.common.enums.ErrorCode;
-import com.twojin.wooritheseday.common.utils.ConvertModules;
+import com.twojin.wooritheseday.common.utils.JsonConvertModules;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerMasterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
@@ -245,8 +245,8 @@ public class PartnerServiceImpl implements PartnerService {
                 log.error("[selectAllMyRequestQueWithAcceptorId] >> continue2");
                 continue;
             }
-            JSONObject requestInfoObj = ConvertModules.dtoToJsonObj(requestInfo);
-            JSONObject requesterInfoObj = ConvertModules.dtoToJsonObj(requesterInfo);
+            JSONObject requestInfoObj = JsonConvertModules.dtoToJsonObj(requestInfo);
+            JSONObject requesterInfoObj = JsonConvertModules.dtoToJsonObj(requesterInfo);
 
             objectMap.put("reqQueInfo", requestInfoObj);
             objectMap.put("partnerInfo", requesterInfoObj);

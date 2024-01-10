@@ -4,7 +4,7 @@ package com.twojin.wooritheseday.partner.controller;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
-import com.twojin.wooritheseday.common.utils.ConvertModules;
+import com.twojin.wooritheseday.common.utils.JsonConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
@@ -53,7 +53,7 @@ public class PartnerManageController {
             partner= partnerService.getPartnerInfoByUserId(userId);
 
             if (partner != null) { // 조회 결과 있음
-                apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(partner));
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(JsonConvertModules.dtoToJsonObj(partner));
             } else { // 조회 결과 없음
                 log.error("[getMyPartnerInfo] >> 조회 결과 없음");
                 throw new BusinessExceptionHandler(ErrorCode.PARTNER_NOT_EXIST.getMessage(), ErrorCode.PARTNER_NOT_EXIST);
@@ -79,7 +79,7 @@ public class PartnerManageController {
             if (partnerTempQueDTO == null) {
                 throw new BusinessExceptionHandler(ErrorCode.PARTNER_REGIST_QUEUE_FAIL.getMessage(), ErrorCode.PARTNER_REGIST_QUEUE_FAIL);
             }
-            resultObj = ConvertModules.dtoToJsonObj(partnerTempQueDTO);
+            resultObj = JsonConvertModules.dtoToJsonObj(partnerTempQueDTO);
             apiResponse = ApiResponse.createSuccessApiResponseWithObj(resultObj);
         } catch (Exception e) {
             apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
@@ -138,7 +138,7 @@ public class PartnerManageController {
                 resultMap.put("partnerInfo", partnerInfo); // 파트너 정보
                 resultMap.put("reqQueInfo", reqQue); // 요청 상황
 
-                result = ConvertModules.dtoToJsonObj(resultMap);
+                result = JsonConvertModules.dtoToJsonObj(resultMap);
 
 
             } else {
@@ -191,7 +191,7 @@ public class PartnerManageController {
             log.debug("[selectMyPartnerRequesetQue] >> 요청 목록 조회 START ");
             mapList = partnerService.selectAllMyRequestQueWithAcceptorId(userId);
             log.debug("[selectMyPartnerRequesetQue] >> mapList :: " + mapList.toString());
-            result = ConvertModules.listToJsonArray(mapList);
+            result = JsonConvertModules.listToJsonArray(mapList);
             apiResponse = ApiResponse.createSuccessApiResponseWithObj(result);
         } catch (Exception e) {
             apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
@@ -244,7 +244,7 @@ public class PartnerManageController {
             PartnerInfoVo partnerInfoVo = partnerService.acceptPartnerRequest(ptRequestQue);
 
             if (partnerInfoVo != null) {
-                apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(partnerInfoVo));
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(JsonConvertModules.dtoToJsonObj(partnerInfoVo));
             } else {
                 apiResponse = ApiResponse.createFailApiResponseAuto();
             }
@@ -280,7 +280,7 @@ public class PartnerManageController {
             PartnerInfoVo resp= partnerService.updatePartnerMeetDate(userId, parseDate);
 
             log.debug("[updatePartnerMeetDt] >> 성공");
-            apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(resp));
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(JsonConvertModules.dtoToJsonObj(resp));
 
         } catch (ParseException e) {
             log.error("[updatePartnerMeetDt] >> parseError : "+ meetDt , e);
@@ -304,7 +304,7 @@ public class PartnerManageController {
 
         try {
             PartnerInfoVo resultVo= partnerService.updatePartnerAlias(userId, partnerAlias);
-            apiResponse = ApiResponse.createSuccessApiResponseWithObj(ConvertModules.dtoToJsonObj(resultVo));
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(JsonConvertModules.dtoToJsonObj(resultVo));
         } catch (Exception e) {
             apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
         }

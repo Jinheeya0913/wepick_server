@@ -11,7 +11,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.List;
 
-public class ConvertModules {
+public class JsonConvertModules {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
     private static String dtoJsonString;

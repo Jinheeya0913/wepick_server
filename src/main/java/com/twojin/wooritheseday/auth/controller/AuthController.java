@@ -5,7 +5,7 @@ import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.auth.service.TokenService;
-import com.twojin.wooritheseday.common.utils.ConvertModules;
+import com.twojin.wooritheseday.common.utils.JsonConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.user.entity.UserDTO;
@@ -185,7 +185,7 @@ public class AuthController {
     private JSONObject getUserDataFromToken(String token) {
         String userIdFromToken = TokenUtil.getUserIdFromToken(token);
         UserDTO userDTO = userService.loadMyAccountByUserId(userIdFromToken);
-        JSONObject jsonObject = ConvertModules.dtoToJsonObj(userDTO);
+        JSONObject jsonObject = JsonConvertModules.dtoToJsonObj(userDTO);
 
         return jsonObject;
     }
