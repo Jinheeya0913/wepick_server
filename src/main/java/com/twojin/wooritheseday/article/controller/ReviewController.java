@@ -30,7 +30,7 @@ public class ReviewController {
         reviewHallDTO.setUserId(userId);
 
         try {
-            boolean result = reviewService.writeReviewArticle(reviewHallDTO);
+            boolean result = reviewService.writeReviewHall(reviewHallDTO);
             apiResponse = ApiResponse.createSuccessApiResponseAuto();
         } catch (Exception e) {
             apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);

@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface ReviewHallRepository extends JpaRepository<ReviewHallDTO, Long> {
 
 
+
+
 }

@@ -68,6 +68,12 @@ public enum ErrorCode {
 
     ESTIMATE_EXIST_ALREADY(200,"E002", "이미 작성한 홀의 견적입니다."),
 
+    /**
+     * Review Eerror
+     */
+
+    REVIEW_REGIST_FAIL(200, "R001", "업로드 중 에러가 발생하였습니다. 다시 작성해주세요"),
+
 
 
 
