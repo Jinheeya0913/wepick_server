@@ -1,4 +1,4 @@
-package com.twojin.wooritheseday.common.codes;
+package com.twojin.wooritheseday.common.enums;
 
 import lombok.Getter;
 import lombok.ToString;
