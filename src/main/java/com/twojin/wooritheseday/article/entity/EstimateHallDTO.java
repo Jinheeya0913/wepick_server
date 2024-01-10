@@ -2,6 +2,7 @@ package com.twojin.wooritheseday.article.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.twojin.wooritheseday.product.entity.PlaceDTO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

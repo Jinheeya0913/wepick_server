@@ -1,7 +1,6 @@
 package com.twojin.wooritheseday.article.service.impl;
 
 import com.twojin.wooritheseday.article.entity.EstimateHallDTO;
-import com.twojin.wooritheseday.article.entity.HallDTO;
 import com.twojin.wooritheseday.article.repository.EstimateHallRepository;
 import com.twojin.wooritheseday.article.service.EstimateService;
 import com.twojin.wooritheseday.common.codes.ErrorCode;

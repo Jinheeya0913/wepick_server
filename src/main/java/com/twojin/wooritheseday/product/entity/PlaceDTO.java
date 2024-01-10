@@ -1,4 +1,4 @@
-package com.twojin.wooritheseday.article.entity;
+package com.twojin.wooritheseday.product.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
