@@ -1,6 +1,6 @@
 package com.twojin.wooritheseday.user.controller.test;
 
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.user.service.UserService;

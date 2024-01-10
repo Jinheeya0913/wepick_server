@@ -2,7 +2,7 @@ package com.twojin.wooritheseday.config.handler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

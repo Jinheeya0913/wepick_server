@@ -1,6 +1,6 @@
 package com.twojin.wooritheseday.config.handler;
 
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 

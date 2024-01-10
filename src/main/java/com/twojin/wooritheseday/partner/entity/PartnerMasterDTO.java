@@ -1,7 +1,7 @@
 package com.twojin.wooritheseday.partner.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.utils.BooleanToYNConverterUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import lombok.Builder;

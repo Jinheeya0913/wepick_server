@@ -2,16 +2,14 @@ package com.twojin.wooritheseday.partner.controller;
 
 
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.partner.entity.PartnerMasterDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerTempQueDTO;
 import com.twojin.wooritheseday.partner.entity.PartnerRequestQueueDTO;
 import com.twojin.wooritheseday.partner.entity.vo.PartnerInfoVo;
-import com.twojin.wooritheseday.partner.util.PartnerUtils;
 import com.twojin.wooritheseday.user.entity.UserDTO;
 import com.twojin.wooritheseday.partner.service.PartnerService;
 import com.twojin.wooritheseday.user.service.UserService;

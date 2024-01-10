@@ -1,6 +1,6 @@
 package com.twojin.wooritheseday.user.service.impl;
 
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.auth.service.TokenService;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.user.entity.UserDTO;

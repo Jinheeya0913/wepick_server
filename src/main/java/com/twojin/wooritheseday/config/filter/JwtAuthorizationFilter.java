@@ -1,7 +1,7 @@
 package com.twojin.wooritheseday.config.filter;
 
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;

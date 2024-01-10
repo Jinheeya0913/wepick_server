@@ -4,7 +4,7 @@ package com.twojin.wooritheseday.article.controller;
 import com.twojin.wooritheseday.article.entity.EstimateHallDTO;
 import com.twojin.wooritheseday.article.service.EstimateService;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RequestMapping("/estimate")
 @RestController

@@ -1,7 +1,7 @@
 package com.twojin.wooritheseday.partner.service.impl;
 
 import com.twojin.wooritheseday.common.constant.ProgressConstants;
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.utils.ConvertModules;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.partner.entity.PartnerMasterDTO;

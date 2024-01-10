@@ -1,7 +1,6 @@
 package com.twojin.wooritheseday.file.service.impl;
 
-import com.twojin.wooritheseday.common.codes.ErrorCode;
-import com.twojin.wooritheseday.common.utils.FileUtil;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.file.dto.ProfileImgEntity;
 import com.twojin.wooritheseday.file.dto.vo.FileVo;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -2,7 +2,7 @@ package com.twojin.wooritheseday.auth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.auth.service.TokenService;
 import com.twojin.wooritheseday.common.utils.ConvertModules;

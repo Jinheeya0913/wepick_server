@@ -3,7 +3,7 @@ package com.twojin.wooritheseday.article.service.impl;
 import com.twojin.wooritheseday.article.entity.EstimateHallDTO;
 import com.twojin.wooritheseday.article.repository.EstimateHallRepository;
 import com.twojin.wooritheseday.article.service.EstimateService;
-import com.twojin.wooritheseday.common.codes.ErrorCode;
+import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
