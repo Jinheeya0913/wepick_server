@@ -2,22 +2,20 @@ package com.twojin.wooritheseday.product.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@MappedSuperclass
 public class ReviewCommonVO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ARTICLE")
-    private Long reviewCd;
 
-    public String reveiwerId;
+    public String userId;
 
     public String reviewTitle;
 
@@ -32,4 +30,13 @@ public class ReviewCommonVO {
     @UpdateTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
     public Date updateDt;
+
+    public ReviewCommonVO(String userId, String reviewTitle, String reviewContents, String reviewImages, Date registDt, Date updateDt) {
+        this.userId = userId;
+        this.reviewTitle = reviewTitle;
+        this.reviewContents = reviewContents;
+        this.reviewImages = reviewImages;
+        this.registDt = registDt;
+        this.updateDt = updateDt;
+    }
 }
