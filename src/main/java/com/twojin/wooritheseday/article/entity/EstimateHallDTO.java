@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "woori_hall_estimate")
+@Table(name = "woori_estimate_hall")
 public class EstimateHallDTO {
 
 
