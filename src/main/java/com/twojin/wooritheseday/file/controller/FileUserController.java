@@ -57,7 +57,7 @@ public class FileUserController {
             if (user != null) {
                 jsonObject = JsonConvertModules.dtoToJsonObj(user);
             } else {
-                throw new BusinessExceptionHandler(ErrorCode.USER_PROFILE_IMG_UPLOAD.getMessage(), ErrorCode.USER_PROFILE_IMG_UPLOAD);
+                throw new BusinessExceptionHandler(ErrorCode.FILE_IMG_UPLOAD_FAIL.getMessage(), ErrorCode.FILE_IMG_UPLOAD_FAIL);
             }
             apiResponse = ApiResponse.createSuccessApiResponseWithObj(jsonObject);
 

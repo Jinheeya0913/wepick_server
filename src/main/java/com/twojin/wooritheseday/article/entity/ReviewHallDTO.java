@@ -62,4 +62,11 @@ public class ReviewHallDTO extends ReviewCommonVO {
                 ", updateDt=" + updateDt +
                 '}';
     }
+
+    public void setCommonInfos(ReviewCommonVO commonInfos) {
+        this.setReviewTitle(commonInfos.getUserId());
+        this.setReviewContents(commonInfos.getReviewContents());
+        this.setUserId(commonInfos.getUserId());
+        this.setReviewImages(commonInfos.getReviewImages());
+    }
 }

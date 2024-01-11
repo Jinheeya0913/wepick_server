@@ -80,7 +80,7 @@ public class FileUserServiceImpl implements FileUserService {
                     .useAt(true)
                     .build());
         } catch (Exception e) {
-            throw new BusinessExceptionHandler(ErrorCode.USER_PROFILE_IMG_UPLOAD.getMessage(), ErrorCode.USER_PROFILE_IMG_UPLOAD);
+            throw new BusinessExceptionHandler(ErrorCode.FILE_IMG_UPLOAD_FAIL.getMessage(), ErrorCode.FILE_IMG_UPLOAD_FAIL);
         }
 
         return uuid;
@@ -102,7 +102,7 @@ public class FileUserServiceImpl implements FileUserService {
 
         try {
             ProfileImgEntity imgEntity = profileImgRepository.findByFileName(fileName)
-                    .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.USER_PROFILE_IMG_NOT_FOUND.getMessage(), ErrorCode.USER_PROFILE_IMG_NOT_FOUND));
+                    .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.FILE_IMG_NOT_FOUND.getMessage(), ErrorCode.FILE_IMG_NOT_FOUND));
 
             String folderPath = imgEntity.getFilePath();
             fullPath = uploadPath + File.separator + folderPath + File.separator + fileName + imgEntity.getFileExtension();
@@ -123,10 +123,10 @@ public class FileUserServiceImpl implements FileUserService {
 
         } catch (FileNotFoundException e) {
             log.error("[downloadProfileImage] >> FileNotFoundException");
-            throw new BusinessExceptionHandler(ErrorCode.USER_PROFILE_IMG_NOT_FOUND.getMessage(), ErrorCode.USER_PROFILE_IMG_NOT_FOUND);
+            throw new BusinessExceptionHandler(ErrorCode.FILE_IMG_NOT_FOUND.getMessage(), ErrorCode.FILE_IMG_NOT_FOUND);
         } catch (Exception e) {
             log.error("[downloadProfileImage] >> Exception");
-            throw new BusinessExceptionHandler(ErrorCode.USER_PROFILE_IMG_DOWNLOAD.getMessage(), ErrorCode.USER_PROFILE_IMG_DOWNLOAD);
+            throw new BusinessExceptionHandler(ErrorCode.FILE_IMG_DOWNLOAD.getMessage(), ErrorCode.FILE_IMG_DOWNLOAD);
         }
 
 

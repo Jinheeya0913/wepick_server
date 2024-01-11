@@ -25,9 +25,12 @@ public enum ErrorCode {
      *  File Error
      */
 
-    USER_PROFILE_IMG_UPLOAD(200, "F001", "이미지 저장에 실패하였습니다."),
-    USER_PROFILE_IMG_NOT_FOUND(200, "F002", "이미지를 찾지 못했습니다."),
-    USER_PROFILE_IMG_DOWNLOAD(200, "F003", "이미지 불러오기에 실패하였습니다."),
+    FILE_WRONG_FORMAT(200, "F001", "올바른 형식의 파일이 아닙니다."),
+    FILE_IMG_UPLOAD_FAIL(200, "F011", "이미지 저장에 실패하였습니다."),
+    FILE_IMG_NOT_FOUND(200, "F012", "이미지를 찾지 못했습니다."),
+    FILE_IMG_DOWNLOAD(200, "F013", "이미지 불러오기에 실패하였습니다."),
+
+
 
 
     /**

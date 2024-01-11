@@ -1,6 +1,7 @@
 package com.twojin.wooritheseday.article.controller;
 
 import com.twojin.wooritheseday.article.entity.ReviewHallDTO;
+import com.twojin.wooritheseday.article.entity.ReviewMasterDTO;
 import com.twojin.wooritheseday.article.service.ReviewService;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.enums.ErrorCode;
@@ -35,12 +36,15 @@ public class ReviewController {
         ApiResponse apiResponse = null;
         String userId = TokenUtil.getUserIdFromHeader(accessHeader);
 
-        reviewService.writeReviewHall(data, images,  userId);
 
+        try {
+            ReviewMasterDTO reviewMasterDTO = reviewService.writeReviewHall(data, images, userId);
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(reviewMasterDTO);
+        } catch (Exception e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        }
 
-
-
-        return ResponseEntity.ok(ApiResponse.createSuccessApiResponseAuto());
+        return ResponseEntity.ok(apiResponse);
     }
 
 }
