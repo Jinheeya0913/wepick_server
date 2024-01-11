@@ -74,6 +74,8 @@ public enum ErrorCode {
 
     REVIEW_REGIST_FAIL(200, "R001", "업로드 중 에러가 발생하였습니다. 다시 작성해주세요"),
 
+    REVIEW_REGIST_ALREADY(200, "R002", "이미 리뷰를 작성한 이력이 있습니다."),
+
 
 
 

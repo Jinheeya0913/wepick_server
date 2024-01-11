@@ -21,7 +21,7 @@ public abstract class FileEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected   Long fileId;
+    private Long fileId;
 
     protected String fileName;
 

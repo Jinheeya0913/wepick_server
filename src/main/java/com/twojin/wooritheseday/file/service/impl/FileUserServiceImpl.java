@@ -87,6 +87,11 @@ public class FileUserServiceImpl implements FileUserService {
     }
 
     @Override
+    public String uploadReviewImages(MultipartFile file, String userId) {
+        return null;
+    }
+
+    @Override
     public FileVo downloadProfileImage(String fileName) {
         FileSystemResource resource = null;
         Path filePath = null;
