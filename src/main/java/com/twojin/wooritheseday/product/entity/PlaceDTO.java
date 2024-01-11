@@ -2,6 +2,7 @@ package com.twojin.wooritheseday.product.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name = "woori_place_master")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PlaceDTO {
 
     @Id
@@ -22,7 +24,7 @@ public class PlaceDTO {
     @Column(name = "place_cd")
     protected Long placeCd;
 
-    protected String placeName;
+    protected String placeNm;
 
     protected String placeAddress;
 

@@ -1,6 +1,7 @@
 package com.twojin.wooritheseday.product.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.twojin.wooritheseday.common.utils.StringListConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;

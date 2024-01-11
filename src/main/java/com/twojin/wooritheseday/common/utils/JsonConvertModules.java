@@ -2,14 +2,17 @@ package com.twojin.wooritheseday.common.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.util.List;
+import java.util.Map;
 
 public class JsonConvertModules {
 
@@ -45,6 +48,34 @@ public class JsonConvertModules {
             jsonArray.add(dtoToJsonObj(obj));
         }
         return jsonArray;
+    }
+
+    public static <T> T jsonStrToDto(String jsonString, Class<T> dtoClass) {
+        try {
+            JsonNode originalNode = objectMapper.readTree(jsonString);
+            ObjectNode filteredNode = objectMapper.createObjectNode();
+
+            // DTO의 필드를 동적으로 가져와서 JSON 데이터에서 해당 필드만 추출
+            for (var field : dtoClass.getDeclaredFields()) {
+                String fieldName = field.getName();
+                if (originalNode.has(fieldName)) {
+                    filteredNode .put(fieldName, originalNode.path(fieldName));
+                }
+            }
+
+            return objectMapper.treeToValue(filteredNode, dtoClass);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static String toJsonString(Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

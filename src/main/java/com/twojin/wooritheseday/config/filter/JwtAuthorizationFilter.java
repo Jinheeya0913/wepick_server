@@ -39,7 +39,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         List<String> list = Arrays.asList(
                 "/user/login",
                 "/user/join",
-//                "/user/me",
                 "/testLogin/login",
                 "/testLogin/join",
                 "/auth/validToken",
