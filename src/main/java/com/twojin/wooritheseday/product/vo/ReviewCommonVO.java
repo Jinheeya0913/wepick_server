@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
@@ -29,6 +30,7 @@ public class ReviewCommonVO {
     Request에서 Json으로 받은 List를 Column에 저장할 때 []으로 감싼 String으로 컬럼에 저장
      */
     @Convert(converter = StringListConverter.class)
+    @Column(length = 1000)
     public List<String> reviewImages;
 
     @CreationTimestamp

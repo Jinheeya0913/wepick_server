@@ -40,8 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public ReviewMasterDTO writeReviewHall(String data, List<MultipartFile> images, String userId) {
-        log.debug("[ReviewServiceImpl] >> writeReviewArticle :: START");
-        log.debug("[ReviewServiceImpl] >> writeReviewArticle :: data.toString() >> " + data.toString());
+        log.debug("[ReviewServiceImpl] >> writeReviewHall :: START");
 
         ReviewHallDTO reviewHallDTO = JsonConvertModules.jsonStrToDto(data, ReviewHallDTO.class);
         ReviewCommonVO reviewCommonVO = JsonConvertModules.jsonStrToDto(data, ReviewCommonVO.class);
@@ -80,7 +79,6 @@ public class ReviewServiceImpl implements ReviewService {
             }
         } catch (BusinessExceptionHandler e) { // 실패할 경우 업로드한 사진들 모두 삭제
             FileUtil.deleteMultiFileImgs(folderPath, saveNameList);
-            throw new BusinessExceptionHandler(ErrorCode.FILE_IMG_UPLOAD_FAIL.getMessage(), ErrorCode.FILE_IMG_UPLOAD_FAIL);
         } catch (Exception e) {
             FileUtil.deleteMultiFileImgs(folderPath, saveNameList);
             throw new RuntimeException(e);
@@ -98,13 +96,20 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewMasterDTO resultMaster = null;
 
         try {
+            log.debug("[ReviewServiceImpl] >> writeReviewHall :: reviewHall 저장 수행");
+
             ReviewHallDTO hallResult = hallRepository.save(reviewHallDTO);
+
             ReviewMasterDTO reviewMasterDTO = new ReviewMasterDTO();
             reviewMasterDTO = reviewMasterDTO.createNewDto(hallResult.getReviewCD(), hallResult.userId, ProductClass.HALL_CLASS);
 
-            return masterRepository.save(reviewMasterDTO);
+
+            log.debug("[ReviewServiceImpl] >> writeReviewHall :: reviewMasterDTO.toString 저장 수행" + reviewMasterDTO.toString());
+            ReviewMasterDTO masterDTO = masterRepository.save(reviewMasterDTO);
+            return masterDTO;
         } catch (Exception e) {
             log.debug("[ReviewServiceImpl] >> writeReviewHall :: Error 발생");
+            FileUtil.deleteMultiFileImgs(folderPath, saveNameList);
             e.printStackTrace();
             throw new BusinessExceptionHandler(ErrorCode.REVIEW_REGIST_FAIL.getMessage(), ErrorCode.REVIEW_REGIST_FAIL);
         }

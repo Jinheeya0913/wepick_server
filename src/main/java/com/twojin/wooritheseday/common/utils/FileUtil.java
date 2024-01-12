@@ -84,7 +84,7 @@ public class FileUtil {
     }
 
     public static boolean deleteMultiFileImgs(String folderPath, List<String> saveNameList) {
-
+        log.debug("[FileUtil] >> deleteMultiFileImgs :: 파일 삭제 수행");
         for (String saveName : saveNameList) {
             File file = new File(saveName);
             if (file.exists()) {

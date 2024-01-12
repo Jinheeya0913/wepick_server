@@ -3,6 +3,9 @@ package com.twojin.wooritheseday.common.enums;
 import lombok.Getter;
 import lombok.ToString;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 @Getter
 @ToString
 public enum ProductClass {
@@ -13,9 +16,8 @@ public enum ProductClass {
 
     PACKAGE_CLASS("PACKAGE"),
 
-
-    // END
     ;
+    // END
     private final String className;
 
     // 생성자 구성

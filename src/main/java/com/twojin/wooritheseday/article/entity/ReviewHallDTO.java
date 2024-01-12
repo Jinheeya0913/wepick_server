@@ -1,6 +1,5 @@
 package com.twojin.wooritheseday.article.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.twojin.wooritheseday.product.entity.PlaceDTO;
 import com.twojin.wooritheseday.product.vo.ReviewCommonVO;
 import lombok.Builder;

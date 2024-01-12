@@ -36,14 +36,18 @@ public class ReviewController {
         ApiResponse apiResponse = null;
         String userId = TokenUtil.getUserIdFromHeader(accessHeader);
 
-
         try {
+
             ReviewMasterDTO reviewMasterDTO = reviewService.writeReviewHall(data, images, userId);
-            apiResponse = ApiResponse.createSuccessApiResponseWithObj(reviewMasterDTO);
+            if (reviewMasterDTO != null) {
+                log.debug("[ReviewController] >> writeReview :: reviewMasterDTO" + reviewMasterDTO.toString());
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(reviewMasterDTO);
+            } else {
+                apiResponse = ApiResponse.createFailApiResponseAuto();
+            }
         } catch (Exception e) {
             apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
         }
-
         return ResponseEntity.ok(apiResponse);
     }
 
