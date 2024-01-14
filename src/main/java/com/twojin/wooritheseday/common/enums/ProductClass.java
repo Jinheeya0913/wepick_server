@@ -13,6 +13,8 @@ public enum ProductClass {
 
     PACKAGE("PACKAGE"),
 
+    ALL("ALL"),
+
     ;
     // END
     private final String className;

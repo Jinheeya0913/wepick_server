@@ -5,6 +5,7 @@ import com.twojin.wooritheseday.article.entity.ReviewMasterDTO;
 import com.twojin.wooritheseday.article.repository.ReviewHallRepository;
 import com.twojin.wooritheseday.article.repository.ReviewMasterRepository;
 import com.twojin.wooritheseday.article.service.ReviewService;
+import com.twojin.wooritheseday.article.vo.ReviewListRespVO;
 import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.enums.ProductClass;
 import com.twojin.wooritheseday.common.utils.FileUtil;
@@ -38,25 +39,34 @@ public class ReviewServiceImpl implements ReviewService {
     FileUtil fileUtil;
 
     @Override
-    public List<ReviewCommonVO> selectReviewListByProductClass(String productClass) {
+    public ReviewListRespVO selectReviewListByProductClass(String productClass) {
         log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: START");
 
         List<ReviewCommonVO> resultList = null;
+
+        ReviewListRespVO respVO = new ReviewListRespVO();
+
         if (productClass.equals(ProductClass.HALL.getClassName())) {
-            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: START"+ProductClass.HALL);
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: "+ProductClass.HALL);
              List<ReviewHallDTO> reviewHallDTOList = hallRepository.findByUseAtOrderByRegistDtDesc(true)
                     .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
             resultList = new ArrayList<>(reviewHallDTOList);
         } else if (productClass.equals(ProductClass.GIFT.getClassName())) {
-            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: START"+ProductClass.GIFT);
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: "+ProductClass.GIFT);
             // 작성 예정
         } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {
-            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: START"+ProductClass.PACKAGE);
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: "+ProductClass.PACKAGE);
             // 작성 예정
+        } else if (productClass.equals(ProductClass.ALL.getClassName())) {
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: "+ProductClass.PACKAGE);
         } else  {
             throw new BusinessExceptionHandler(ErrorCode.MISSING_REQUEST_PARAMETER_ERROR.getMessage(), ErrorCode.MISSING_REQUEST_PARAMETER_ERROR);
         }
-        return resultList;
+
+        respVO.setReviewClass(productClass);
+        respVO.setReviewList(resultList);
+
+        return respVO;
     }
 
     @Override

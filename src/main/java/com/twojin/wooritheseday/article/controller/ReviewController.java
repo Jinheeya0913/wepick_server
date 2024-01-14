@@ -1,5 +1,7 @@
 package com.twojin.wooritheseday.article.controller;
 
+import antlr.Token;
+import com.twojin.wooritheseday.article.vo.ReviewListRespVO;
 import org.apache.commons.lang3.StringUtils;
 import com.twojin.wooritheseday.article.entity.ReviewMasterDTO;
 import com.twojin.wooritheseday.article.service.ReviewService;
@@ -28,18 +30,23 @@ public class ReviewController {
 
     /**
      *
-     * @param accessHeader
+     * @param
      * @return
      */
     @RequestMapping("selectReviewList")
-    public ResponseEntity<ApiResponse> selectReviewList(@RequestHeader(AuthConstants.ACCESS_HEADER) String accessHeader , @RequestBody Map<String,String>  productMap) {
+    public ResponseEntity<ApiResponse> selectReviewList(@RequestBody Map<String,String>  requestMap) {
+
+
+
         log.debug("[ReviewController] >> selectReviewList :: START");
-        log.debug("[ReviewController] >> selectReviewList :: productClass :  " + productMap.get("productClass"));
+        log.debug("[ReviewController] >> selectReviewList :: productClass :  " + requestMap.get("productClass"));
 
 
 
         ApiResponse apiResponse = null;
-        String productClass = productMap.get("productClass");
+        ReviewListRespVO reviewListRespVO = new ReviewListRespVO();
+
+        String productClass = requestMap.get("productClass");
 
 
         try {
@@ -48,8 +55,9 @@ public class ReviewController {
                 throw new BusinessExceptionHandler(ErrorCode.MISSING_REQUEST_PARAMETER_ERROR.getMessage(), ErrorCode.MISSING_REQUEST_PARAMETER_ERROR);
             }
 
-            List<ReviewCommonVO> reviewList = reviewService.selectReviewListByProductClass(productClass);
-            apiResponse = ApiResponse.createSuccessApiResponseWithObj(reviewList);
+            ReviewListRespVO respVO = reviewService.selectReviewListByProductClass(productClass);
+
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(respVO);
         } catch (Exception e) {
             apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
         }
