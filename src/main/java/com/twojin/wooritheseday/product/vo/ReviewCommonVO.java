@@ -2,6 +2,7 @@ package com.twojin.wooritheseday.product.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.twojin.wooritheseday.common.enums.ProductClass;
 import com.twojin.wooritheseday.common.utils.BooleanToYNConverterUtil;
 import com.twojin.wooritheseday.common.utils.StringListConverter;
 import lombok.Builder;
@@ -11,9 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -23,11 +22,14 @@ import java.util.List;
 public class ReviewCommonVO {
 
 
-    public String userId;
+    protected String userId;
 
-    public String reviewTitle;
+    protected String reviewTitle;
 
-    public String reviewContents;
+    protected String reviewContents;
+
+    @Enumerated(EnumType.STRING)
+    protected ProductClass productClass;
 
     @Convert(converter = BooleanToYNConverterUtil.class)
     protected boolean useAt;
