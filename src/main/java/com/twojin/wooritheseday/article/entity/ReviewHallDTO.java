@@ -35,10 +35,21 @@ public class ReviewHallDTO extends ReviewCommonVO {
     protected double serviceRating;
 
     protected double visitorRating;
-    @Builder
-    public ReviewHallDTO(String userId, String reviewTitle, String reviewContents, List<String> reviewImages, Date registDt, Date updateDt, Long reviewCD, double transRating, double banquetRating, double serviceRating, double visitorRating) {
-        super(userId, reviewTitle, reviewContents, reviewImages, registDt, updateDt);
+
+    public ReviewHallDTO(Long reviewCD, PlaceDTO placeInfo, double transRating, double banquetRating, double serviceRating, double visitorRating) {
         this.reviewCD = reviewCD;
+        this.placeInfo = placeInfo;
+        this.transRating = transRating;
+        this.banquetRating = banquetRating;
+        this.serviceRating = serviceRating;
+        this.visitorRating = visitorRating;
+    }
+
+    @Builder
+    public ReviewHallDTO(String userId, String reviewTitle, String reviewContents, boolean useAt, int openCount, int favoriteCount, int thumbCount, List<String> reviewImages, Date registDt, Date updateDt, Long reviewCD, PlaceDTO placeInfo, double transRating, double banquetRating, double serviceRating, double visitorRating) {
+        super(userId, reviewTitle, reviewContents, useAt, openCount, favoriteCount, thumbCount, reviewImages, registDt, updateDt);
+        this.reviewCD = reviewCD;
+        this.placeInfo = placeInfo;
         this.transRating = transRating;
         this.banquetRating = banquetRating;
         this.serviceRating = serviceRating;
@@ -59,6 +70,10 @@ public class ReviewHallDTO extends ReviewCommonVO {
                 ", reviewImages=" + reviewImages +
                 ", registDt=" + registDt +
                 ", updateDt=" + updateDt +
+                ", useAt=" + useAt +
+                ", openCount=" + openCount +
+                ", favoriteCount=" + favoriteCount +
+                ", thumbCont=" + thumbCount +
                 '}';
     }
 
@@ -67,5 +82,7 @@ public class ReviewHallDTO extends ReviewCommonVO {
         this.setReviewContents(commonInfos.getReviewContents());
         this.setUserId(commonInfos.getUserId());
         this.setReviewImages(commonInfos.getReviewImages());
+        this.setUseAt(true);
+
     }
 }

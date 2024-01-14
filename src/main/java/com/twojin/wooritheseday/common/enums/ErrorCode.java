@@ -79,6 +79,10 @@ public enum ErrorCode {
 
     REVIEW_REGIST_ALREADY(200, "R002", "이미 리뷰를 작성한 이력이 있습니다."),
 
+    REVIEW_SELECT_LIST_FAILE(200, "R003", "리스트 조회에 실패하였습니다. 다시 시도 바랍니다."),
+
+
+
 
 
 

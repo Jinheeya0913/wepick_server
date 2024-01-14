@@ -32,18 +32,6 @@ public class ReviewMasterDTO  {
     @Convert(converter = BooleanToYNConverterUtil.class)
     protected boolean useAt;
 
-    @Column(nullable = false)
-//    @ColumnDefault("0")
-    protected int openCount;
-
-    @Column(nullable = false)
-//    @ColumnDefault("0")
-    protected int favoriteCount;
-
-    @Column(nullable = false)
-//    @ColumnDefault("0")
-    protected int thumbCount;
-
 
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
@@ -54,20 +42,15 @@ public class ReviewMasterDTO  {
     protected Date updateDt;
 
     @Builder
-    public ReviewMasterDTO(Long reviewArticleCd, String userId, ProductClass productClass, boolean useAt,
-                           int openCount, int favoriteCount, int thumbCount,
-                           Date registDt, Date updateDt) {
+    public ReviewMasterDTO(Long reviewMasterCd, Long reviewArticleCd, String userId, ProductClass productClass, boolean useAt, Date registDt, Date updateDt) {
+        this.reviewMasterCd = reviewMasterCd;
         this.reviewArticleCd = reviewArticleCd;
         this.userId = userId;
         this.productClass = productClass;
         this.useAt = useAt;
-        this.openCount = openCount;
-        this.favoriteCount = favoriteCount;
-        this.thumbCount = thumbCount;
         this.registDt = registDt;
         this.updateDt = updateDt;
     }
-
 
     public ReviewMasterDTO createNewDto(Long reviewCd, String userId, ProductClass productClass ) {
         return ReviewMasterDTO.builder()

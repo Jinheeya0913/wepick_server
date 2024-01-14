@@ -3,18 +3,15 @@ package com.twojin.wooritheseday.common.enums;
 import lombok.Getter;
 import lombok.ToString;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
 @Getter
 @ToString
 public enum ProductClass {
 
-    HALL_CLASS("HALL"),
+    HALL("HALL"),
 
-    PLACE_CLASS("PLACE"),
+    PLACE("PLACE"),
 
-    PACKAGE_CLASS("PACKAGE"),
+    PACKAGE("PACKAGE"),
 
     ;
     // END

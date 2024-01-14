@@ -12,14 +12,12 @@ import com.twojin.wooritheseday.common.utils.JsonConvertModules;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
 import com.twojin.wooritheseday.product.entity.PlaceDTO;
 import com.twojin.wooritheseday.product.vo.ReviewCommonVO;
-import com.twojin.wooritheseday.user.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +25,8 @@ import java.util.Map;
 @Service("reviewService")
 @Slf4j
 public class ReviewServiceImpl implements ReviewService {
+
+
 
     @Autowired
     ReviewHallRepository hallRepository;
@@ -36,6 +36,20 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Autowired
     FileUtil fileUtil;
+
+    @Override
+    public List<ReviewMasterDTO> selectReviewMasterList(ProductClass productClass) {
+
+        List<ReviewMasterDTO> masterDTOList = masterRepository.findAllByUseAtOrderByRegistDtDesc(true)
+                .orElseThrow( ()->new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
+
+        for (ReviewMasterDTO reviewMasterDTO : masterDTOList) {
+
+
+            log.debug("[ReviewServiceImpl] >> selectReviewMasterList ::  review >> " + reviewMasterDTO.toString());
+        }
+        return null;
+    }
 
     @Override
     @Transactional
@@ -90,6 +104,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewHallDTO.setUserId(userId);
         reviewHallDTO.setReviewTitle(reviewCommonVO.getReviewTitle());
         reviewHallDTO.setReviewContents(reviewCommonVO.getReviewContents());
+        reviewHallDTO.setUseAt(true);
 
 
         // 3. db에 저장
@@ -101,7 +116,7 @@ public class ReviewServiceImpl implements ReviewService {
             ReviewHallDTO hallResult = hallRepository.save(reviewHallDTO);
 
             ReviewMasterDTO reviewMasterDTO = new ReviewMasterDTO();
-            reviewMasterDTO = reviewMasterDTO.createNewDto(hallResult.getReviewCD(), hallResult.userId, ProductClass.HALL_CLASS);
+            reviewMasterDTO = reviewMasterDTO.createNewDto(hallResult.getReviewCD(), hallResult.userId, ProductClass.HALL);
 
 
             log.debug("[ReviewServiceImpl] >> writeReviewHall :: reviewMasterDTO.toString 저장 수행" + reviewMasterDTO.toString());
