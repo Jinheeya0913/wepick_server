@@ -6,7 +6,7 @@ import com.twojin.wooritheseday.file.dto.ProfileImgEntity;
 import com.twojin.wooritheseday.file.dto.vo.FileVo;
 import com.twojin.wooritheseday.file.repository.ProfileImgInfoRepository;
 import com.twojin.wooritheseday.file.service.FileUserService;
-import com.twojin.wooritheseday.user.util.StringUtils;
+import com.twojin.wooritheseday.user.util.CustomStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +49,7 @@ public class FileUserServiceImpl implements FileUserService {
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String folderPath = "userProfileImg";
 
-        String uuid  = StringUtils.createRandomUUid();
+        String uuid  = CustomStringUtils.createRandomUUid();
 
 
         String saveName = uploadPath+File.separator+ folderPath +File.separator+uuid+fileExtension;

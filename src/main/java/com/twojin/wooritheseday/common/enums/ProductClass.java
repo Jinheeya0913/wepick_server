@@ -9,7 +9,7 @@ public enum ProductClass {
 
     HALL("HALL"),
 
-    PLACE("PLACE"),
+    GIFT("GIFT"),
 
     PACKAGE("PACKAGE"),
 

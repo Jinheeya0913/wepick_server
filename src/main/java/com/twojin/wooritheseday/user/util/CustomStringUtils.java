@@ -3,7 +3,7 @@ package com.twojin.wooritheseday.user.util;
 import java.util.Random;
 import java.util.UUID;
 
-public class StringUtils {
+public class CustomStringUtils {
 
     public static String createRandomString() {
         int randomStrLen = 16;

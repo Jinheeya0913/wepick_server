@@ -2,11 +2,9 @@ package com.twojin.wooritheseday.common.utils;
 
 import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.user.util.StringUtils;
-import lombok.experimental.UtilityClass;
+import com.twojin.wooritheseday.user.util.CustomStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +29,7 @@ public class FileUtil {
         String originalFileName = file.getOriginalFilename();
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String foloderPath = folderName;
-        String uuid = StringUtils.createRandomUUid();
+        String uuid = CustomStringUtils.createRandomUUid();
 
         String saveName = uploadPath + File.separator + foloderPath + File.separator + uuid + fileExtension;
         return saveName;
@@ -56,7 +53,7 @@ public class FileUtil {
 
         String originalFileName = file.getOriginalFilename();
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        String uuid  = StringUtils.createRandomUUid();
+        String uuid  = CustomStringUtils.createRandomUUid();
 
         LocalDate today = LocalDate.now();
         String fileName = "";

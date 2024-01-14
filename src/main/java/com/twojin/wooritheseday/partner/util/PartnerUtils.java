@@ -1,12 +1,12 @@
 package com.twojin.wooritheseday.partner.util;
 import com.twojin.wooritheseday.partner.entity.PartnerMasterDTO;
-import com.twojin.wooritheseday.user.util.StringUtils;
+import com.twojin.wooritheseday.user.util.CustomStringUtils;
 
 public class PartnerUtils {
 
     public static String  createPartnerQueueCode() {
 
-        String randomCd = StringUtils.createRandomString();
+        String randomCd = CustomStringUtils.createRandomString();
         return randomCd;
     }
 

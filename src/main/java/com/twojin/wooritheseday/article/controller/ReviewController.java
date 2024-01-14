@@ -1,16 +1,13 @@
 package com.twojin.wooritheseday.article.controller;
 
-import com.twojin.wooritheseday.article.entity.ReviewHallDTO;
+import org.apache.commons.lang3.StringUtils;
 import com.twojin.wooritheseday.article.entity.ReviewMasterDTO;
 import com.twojin.wooritheseday.article.service.ReviewService;
 import com.twojin.wooritheseday.auth.constant.AuthConstants;
 import com.twojin.wooritheseday.common.enums.ErrorCode;
-import com.twojin.wooritheseday.common.enums.ProductClass;
 import com.twojin.wooritheseday.common.response.ApiResponse;
-import com.twojin.wooritheseday.common.utils.JsonConvertModules;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.product.entity.PlaceDTO;
 import com.twojin.wooritheseday.product.vo.ReviewCommonVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,24 +36,25 @@ public class ReviewController {
         log.debug("[ReviewController] >> selectReviewList :: START");
         log.debug("[ReviewController] >> selectReviewList :: productClass :  " + productMap.get("productClass"));
 
+
+
         ApiResponse apiResponse = null;
-        ProductClass product =ProductClass.valueOf(productMap.get("productClass").toUpperCase());
+        String productClass = productMap.get("productClass");
+
 
         try {
-            List<ReviewMasterDTO> reviewMasterList = reviewService.selectReviewMasterList(product);
+            // 비어있으면 오류
+            if (StringUtils.isEmpty(productClass)) {
+                throw new BusinessExceptionHandler(ErrorCode.MISSING_REQUEST_PARAMETER_ERROR.getMessage(), ErrorCode.MISSING_REQUEST_PARAMETER_ERROR);
+            }
+
+            List<ReviewCommonVO> reviewList = reviewService.selectReviewListByProductClass(productClass);
+            apiResponse = ApiResponse.createSuccessApiResponseWithObj(reviewList);
         } catch (Exception e) {
             apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
         }
 
-
-        try {
-
-            reviewService.selectReviewMasterList(product);
-        } catch (Exception e) {
-            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
-        }
-
-        return ResponseEntity.ok(ApiResponse.createSuccessApiResponseAuto());
+        return ResponseEntity.ok(apiResponse);
     }
 
     @RequestMapping(value = "writeReviewHall", consumes = "multipart/form-data")

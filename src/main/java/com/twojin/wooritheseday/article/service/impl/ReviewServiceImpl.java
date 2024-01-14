@@ -38,17 +38,25 @@ public class ReviewServiceImpl implements ReviewService {
     FileUtil fileUtil;
 
     @Override
-    public List<ReviewMasterDTO> selectReviewMasterList(ProductClass productClass) {
+    public List<ReviewCommonVO> selectReviewListByProductClass(String productClass) {
+        log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: START");
 
-        List<ReviewMasterDTO> masterDTOList = masterRepository.findAllByUseAtOrderByRegistDtDesc(true)
-                .orElseThrow( ()->new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
-
-        for (ReviewMasterDTO reviewMasterDTO : masterDTOList) {
-
-
-            log.debug("[ReviewServiceImpl] >> selectReviewMasterList ::  review >> " + reviewMasterDTO.toString());
+        List<ReviewCommonVO> resultList = null;
+        if (productClass.equals(ProductClass.HALL.getClassName())) {
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: START"+ProductClass.HALL);
+             List<ReviewHallDTO> reviewHallDTOList = hallRepository.findByUseAtOrderByRegistDtDesc(true)
+                    .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
+            resultList = new ArrayList<>(reviewHallDTOList);
+        } else if (productClass.equals(ProductClass.GIFT.getClassName())) {
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: START"+ProductClass.GIFT);
+            // 작성 예정
+        } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: START"+ProductClass.PACKAGE);
+            // 작성 예정
+        } else  {
+            throw new BusinessExceptionHandler(ErrorCode.MISSING_REQUEST_PARAMETER_ERROR.getMessage(), ErrorCode.MISSING_REQUEST_PARAMETER_ERROR);
         }
-        return null;
+        return resultList;
     }
 
     @Override
@@ -105,6 +113,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewHallDTO.setReviewTitle(reviewCommonVO.getReviewTitle());
         reviewHallDTO.setReviewContents(reviewCommonVO.getReviewContents());
         reviewHallDTO.setUseAt(true);
+        reviewHallDTO.setProductClass(ProductClass.HALL);
 
 
         // 3. db에 저장
@@ -116,7 +125,7 @@ public class ReviewServiceImpl implements ReviewService {
             ReviewHallDTO hallResult = hallRepository.save(reviewHallDTO);
 
             ReviewMasterDTO reviewMasterDTO = new ReviewMasterDTO();
-            reviewMasterDTO = reviewMasterDTO.createNewDto(hallResult.getReviewCD(), hallResult.userId, ProductClass.HALL);
+            reviewMasterDTO = reviewMasterDTO.createNewDto(hallResult.getReviewCD(), hallResult.getUserId(), ProductClass.HALL);
 
 
             log.debug("[ReviewServiceImpl] >> writeReviewHall :: reviewMasterDTO.toString 저장 수행" + reviewMasterDTO.toString());
