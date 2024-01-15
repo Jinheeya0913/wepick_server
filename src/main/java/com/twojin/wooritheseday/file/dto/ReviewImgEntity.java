@@ -1,5 +1,6 @@
 package com.twojin.wooritheseday.file.dto;
 
+import com.twojin.wooritheseday.common.enums.ProductClass;
 import com.twojin.wooritheseday.common.utils.BooleanToYNConverterUtil;
 import com.twojin.wooritheseday.common.vo.FileEntity;
 import lombok.AccessLevel;
@@ -20,17 +21,21 @@ public class ReviewImgEntity extends FileEntity {
     @NotBlank
     protected String userId;
 
+    @Enumerated(EnumType.STRING)
+    protected ProductClass productClass;
+
     @Convert(converter = BooleanToYNConverterUtil.class)
     protected boolean useAt;
 
 
     @Builder
-    public ReviewImgEntity(String userId, String filePath, String fileName, String fileExtension, boolean useAt) {
+    public ReviewImgEntity(String userId, String filePath, String fileName, String fileExtension, boolean useAt, ProductClass productClass) {
         this.userId = userId;
         super.filePath = filePath;
         super.fileName = fileName;
         this.fileExtension = fileExtension;
         this.useAt = useAt;
+        this.productClass = productClass;
 
     }
 
