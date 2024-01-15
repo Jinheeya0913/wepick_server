@@ -11,6 +11,8 @@ import com.twojin.wooritheseday.common.enums.ProductClass;
 import com.twojin.wooritheseday.common.utils.FileUtil;
 import com.twojin.wooritheseday.common.utils.JsonConvertModules;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
+import com.twojin.wooritheseday.file.dto.ReviewImgEntity;
+import com.twojin.wooritheseday.file.repository.ReviewImgInfoRepository;
 import com.twojin.wooritheseday.product.entity.PlaceDTO;
 import com.twojin.wooritheseday.product.vo.ReviewCommonVO;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     ReviewMasterRepository masterRepository;
 
+    @Autowired
+    ReviewImgInfoRepository reviewImgInfoRepository;
     @Autowired
     FileUtil fileUtil;
 
@@ -78,6 +82,8 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewCommonVO reviewCommonVO = JsonConvertModules.jsonStrToDto(data, ReviewCommonVO.class);
         PlaceDTO placeDTO = JsonConvertModules.jsonStrToDto(JsonConvertModules.toJsonString(reviewHallDTO.getPlaceInfo()), PlaceDTO.class);
 
+        ProductClass productClass = ProductClass.HALL;
+
 
         // 1. 이미 리뷰한 대상인지 확인
 
@@ -93,14 +99,28 @@ public class ReviewServiceImpl implements ReviewService {
         String folderPath = "reviewHallImgs";
         List<String> fileNameList = new ArrayList<String>();
         List<String> saveNameList = new ArrayList<String >();
+        ReviewImgEntity fileVo;
 
         try {
+            fileVo = null;
             if (images.size() > 0) {
                 for (MultipartFile file : images) {
                     Map<String, String> resultMap = fileUtil.saveMultiFileImg(file, folderPath);
                     String fileName = resultMap.get("fileName");
                     String saveName = resultMap.get("saveName");
-                    if (fileName != null && saveName != null) {
+                    String fileExtension = resultMap.get("fileExtension");
+                    fileVo = ReviewImgEntity.builder()
+                            .userId(userId)
+                            .fileExtension(fileExtension)
+                            .useAt(true)
+                            .fileName(fileName)
+                            .filePath(folderPath)
+                            .productClass(productClass)
+                            .build();
+
+                    reviewImgInfoRepository.save(fileVo);
+
+                    if (fileName != null && saveName != null && fileVo != null) {
                         log.debug("[ReviewServiceImpl] >> writeReviewHall :: 이미저 저장 성공 >>" + fileName);
                         fileNameList.add(fileName);
                         saveNameList.add(saveName);
@@ -135,7 +155,7 @@ public class ReviewServiceImpl implements ReviewService {
             ReviewHallDTO hallResult = hallRepository.save(reviewHallDTO);
 
             ReviewMasterDTO reviewMasterDTO = new ReviewMasterDTO();
-            reviewMasterDTO = reviewMasterDTO.createNewDto(hallResult.getReviewCD(), hallResult.getUserId(), ProductClass.HALL);
+            reviewMasterDTO = reviewMasterDTO.createNewDto(hallResult.getReviewCD(), hallResult.getUserId(), productClass);
 
 
             log.debug("[ReviewServiceImpl] >> writeReviewHall :: reviewMasterDTO.toString 저장 수행" + reviewMasterDTO.toString());
