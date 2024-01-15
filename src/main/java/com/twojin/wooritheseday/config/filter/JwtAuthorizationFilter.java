@@ -43,7 +43,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 "/testLogin/join",
                 "/auth/validToken",
                 "/auth/login",
-                "/file/me/getProfileImg"
+                "/file/me/getProfileImg",
+                "/file/review/getReviewImg"
         );
 
         String requestUri = request.getRequestURI();
