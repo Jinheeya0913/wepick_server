@@ -28,6 +28,8 @@ public class ReviewHallDTO extends ReviewCommonVO {
     @JoinColumn(name="place_cd",referencedColumnName = "place_cd")
     private PlaceDTO placeInfo;
 
+    protected String hallNm;
+
     protected double transRating;
 
     protected double banquetRating;
@@ -46,10 +48,21 @@ public class ReviewHallDTO extends ReviewCommonVO {
     }
 
     @Builder
-    public ReviewHallDTO(String userId, String reviewTitle, String reviewContents, boolean useAt, int openCount, int favoriteCount, int thumbCount, List<String> reviewImages, Date registDt, Date updateDt, Long reviewCD, PlaceDTO placeInfo, double transRating, double banquetRating, double serviceRating, double visitorRating) {
+    public ReviewHallDTO(Long reviewCD, PlaceDTO placeInfo, String hallNm, double transRating, double banquetRating, double serviceRating, double visitorRating) {
+        this.reviewCD = reviewCD;
+        this.placeInfo = placeInfo;
+        this.hallNm = hallNm;
+        this.transRating = transRating;
+        this.banquetRating = banquetRating;
+        this.serviceRating = serviceRating;
+        this.visitorRating = visitorRating;
+    }
+
+    public ReviewHallDTO(String userId, String reviewTitle, String reviewContents, boolean useAt, int openCount, int favoriteCount, int thumbCount, List<String> reviewImages, Date registDt, Date updateDt, Long reviewCD, PlaceDTO placeInfo, String hallNm, double transRating, double banquetRating, double serviceRating, double visitorRating) {
         super(userId, reviewTitle, reviewContents, useAt, openCount, favoriteCount, thumbCount, reviewImages, registDt, updateDt);
         this.reviewCD = reviewCD;
         this.placeInfo = placeInfo;
+        this.hallNm = hallNm;
         this.transRating = transRating;
         this.banquetRating = banquetRating;
         this.serviceRating = serviceRating;

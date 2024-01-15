@@ -23,7 +23,7 @@ public class HallDTO {
     @JoinColumn(name = "place_cd" , referencedColumnName = "place_cd")
     private PlaceDTO placeCd;
 
-    private String hallName;
+    private String hallNm;
 
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
