@@ -10,5 +10,7 @@ import java.util.Optional;
 @Repository
 public interface PlaceRepository extends JpaRepository<PlaceDTO, Long> {
 
+    Optional<List<PlaceDTO>> findAllByUseAt(boolean useAt);
+
 
 }

@@ -3,6 +3,7 @@ package com.twojin.wooritheseday.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.twojin.wooritheseday.common.utils.BooleanToYNConverterUtil;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -29,6 +30,9 @@ public class PlaceDTO {
     protected String placeAddress;
 
     protected String placePhone;
+
+    @Convert(converter = BooleanToYNConverterUtil.class)
+    protected boolean useAt;
 
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")

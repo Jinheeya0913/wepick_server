@@ -81,9 +81,11 @@ public enum ErrorCode {
 
     REVIEW_SELECT_LIST_FAILE(200, "R003", "리스트 조회에 실패하였습니다. 다시 시도 바랍니다."),
 
+    /**
+     * Product Error
+     */
 
-
-
+    PRODUCT_SELECT_FAIL(200, "P001", "조회 중 오류가 발생하였습니다. 다시 시도 바랍니다."),
 
 
     /**
