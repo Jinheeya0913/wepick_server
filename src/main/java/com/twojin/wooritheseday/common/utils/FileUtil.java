@@ -76,6 +76,7 @@ public class FileUtil {
 
         resultMap.put("fileName", fileName);
         resultMap.put("saveName", saveName);
+        resultMap.put("fileExtension", fileExtension);
 
         return resultMap;
     }
