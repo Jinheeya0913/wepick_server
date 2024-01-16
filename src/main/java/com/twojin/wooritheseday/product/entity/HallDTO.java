@@ -1,6 +1,7 @@
 package com.twojin.wooritheseday.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.twojin.wooritheseday.common.utils.BooleanToYNConverterUtil;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -25,6 +26,9 @@ public class HallDTO {
 
     private String hallNm;
 
+    @Convert(converter = BooleanToYNConverterUtil.class)
+    private boolean useAt;
+
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
     private Date registDt;
@@ -32,4 +36,6 @@ public class HallDTO {
     @UpdateTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
     private Date updateDt;
+
+
 }
