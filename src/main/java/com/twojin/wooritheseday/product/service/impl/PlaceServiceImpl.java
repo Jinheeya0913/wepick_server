@@ -26,6 +26,10 @@ public class PlaceServiceImpl implements PlaceService {
         List<PlaceDTO> placeDTOList = placeRepository.findAllByUseAt(true)
                 .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.PRODUCT_SELECT_FAIL.getMessage(), ErrorCode.PRODUCT_SELECT_FAIL));
 
+        if (placeDTOList.isEmpty()) {
+            throw new BusinessExceptionHandler(ErrorCode.PRODUCT_SELECT_NO_RESULT.getMessage(), ErrorCode.PRODUCT_SELECT_NO_RESULT);
+        }
+
         return placeDTOList;
     }
 }
