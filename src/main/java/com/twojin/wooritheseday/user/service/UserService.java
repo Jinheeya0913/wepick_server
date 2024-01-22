@@ -21,4 +21,7 @@ public interface UserService  {
     UserDTO updateUserImgUrl(String imgUrl, String userId);
 
     String getUserNmByUserId(String userId);
+
+    UserDTO selectSimpleUserInfoByUserId(String userId);
+
 }

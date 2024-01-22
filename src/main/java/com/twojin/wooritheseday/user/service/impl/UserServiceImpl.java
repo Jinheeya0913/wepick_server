@@ -118,8 +118,31 @@ public class UserServiceImpl implements UserService {
     }
 
     public  String getUserNmByUserId(String userId) {
+        log.debug("[UserServiceImpl] >> getUserNmByUserId :: START");
         String userNm= userRepository.findUserNmByUserId(userId).orElse(null);
         return userNm;
+    }
+
+    /**
+     *
+     * @param userId
+     * @return userId, userEmail
+     *
+     * 간단한 정보만 전달
+     */
+    @Override
+    public UserDTO selectSimpleUserInfoByUserId(String userId) {
+        log.debug("[UserServiceImpl] >> selectSimpleUserInfoByUserId :: START");
+
+        UserDTO userDTO=userRepository.findByUserId(userId)
+                .orElseThrow(()->new BusinessExceptionHandler(ErrorCode.USER_NOT_SELECTED.getMessage(), ErrorCode.USER_NOT_SELECTED));
+
+
+
+        return UserDTO.builder()
+                .userId(userDTO.getUserId())
+                .userImgUrl(userDTO.getUserImgUrl())
+                .build();
     }
 
     public String getEncodedPassword(String userPw) {
