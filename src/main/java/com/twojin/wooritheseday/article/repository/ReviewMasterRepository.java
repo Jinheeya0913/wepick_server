@@ -13,4 +13,6 @@ public interface ReviewMasterRepository extends JpaRepository<ReviewMasterDTO, L
 //    Optional<List<ReviewMasterDTO>> findAllByByProductClassOrderByRegistDtDesc(String productClass);
 
     Optional<List<ReviewMasterDTO>> findAllByUseAtOrderByRegistDtDesc(boolean useAt);
+
+    Optional<ReviewMasterDTO> findByReviewArticleCd(Long reviewArticleCd);
 }

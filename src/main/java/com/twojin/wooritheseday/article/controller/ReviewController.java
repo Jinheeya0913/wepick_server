@@ -1,6 +1,5 @@
 package com.twojin.wooritheseday.article.controller;
 
-import antlr.Token;
 import com.twojin.wooritheseday.article.vo.ReviewListRespVO;
 import org.apache.commons.lang3.StringUtils;
 import com.twojin.wooritheseday.article.entity.ReviewMasterDTO;
@@ -10,7 +9,6 @@ import com.twojin.wooritheseday.common.enums.ErrorCode;
 import com.twojin.wooritheseday.common.response.ApiResponse;
 import com.twojin.wooritheseday.common.utils.TokenUtil;
 import com.twojin.wooritheseday.config.handler.BusinessExceptionHandler;
-import com.twojin.wooritheseday.product.vo.ReviewCommonVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +73,6 @@ public class ReviewController {
         String userId = TokenUtil.getUserIdFromHeader(accessHeader);
 
         try {
-
             ReviewMasterDTO reviewMasterDTO = reviewService.writeReviewHall(data, images, userId);
             if (reviewMasterDTO != null) {
                 log.debug("[ReviewController] >> writeReview :: reviewMasterDTO" + reviewMasterDTO.toString());

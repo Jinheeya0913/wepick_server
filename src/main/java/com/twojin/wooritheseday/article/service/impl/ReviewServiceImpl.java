@@ -15,6 +15,8 @@ import com.twojin.wooritheseday.file.dto.ReviewImgEntity;
 import com.twojin.wooritheseday.file.repository.ReviewImgInfoRepository;
 import com.twojin.wooritheseday.product.entity.PlaceDTO;
 import com.twojin.wooritheseday.product.vo.ReviewCommonVO;
+import com.twojin.wooritheseday.user.entity.MyReviewLike;
+import com.twojin.wooritheseday.user.repository.UserReviewLikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,9 +38,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Autowired
     ReviewMasterRepository masterRepository;
-
     @Autowired
     ReviewImgInfoRepository reviewImgInfoRepository;
+
+    @Autowired
+    UserReviewLikeRepository userReviewLikeRepository;
     @Autowired
     FileUtil fileUtil;
 
@@ -166,6 +170,66 @@ public class ReviewServiceImpl implements ReviewService {
             FileUtil.deleteMultiFileImgs(folderPath, saveNameList);
             e.printStackTrace();
             throw new BusinessExceptionHandler(ErrorCode.REVIEW_REGIST_FAIL.getMessage(), ErrorCode.REVIEW_REGIST_FAIL);
+        }
+    }
+
+
+    /**
+     *
+     * @param reviewInfo
+     * @param userId
+     * @return true : thumb up / false : thumb down
+     */
+    @Override
+    @Transactional
+    public boolean thumbUpDownReviewLike(ReviewMasterDTO reviewInfo, String userId) {
+        log.debug("[ReviewServiceImpl] >> thumbUpReviewLike :: START");
+
+        String  productClass = reviewInfo.getProductClass().getClassName();
+
+        MyReviewLike myReviewLike = userReviewLikeRepository.findByUserIdAndReviewArticleCd(userId, reviewInfo.getReviewArticleCd())
+                .orElse(null);
+
+        ReviewHallDTO reviewHallInfo = null;
+
+
+        if (myReviewLike != null) {
+            userReviewLikeRepository.delete(myReviewLike);
+            if (productClass.equals(ProductClass.HALL.getClassName())) {
+                log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: Hall Review Count -1");
+                reviewHallInfo = hallRepository.findByReviewCD(myReviewLike.getReviewArticleCd())
+                        .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
+                reviewHallInfo.setFavoriteCount(reviewHallInfo.getFavoriteCount()-1);
+                hallRepository.save(reviewHallInfo);
+            } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {
+                log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGE Review Count -1");
+            } else if (productClass.equals(ProductClass.GIFT.getClassName())){
+                log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGIFTGE Review Count -1");
+            }
+
+            return true;
+        } else {
+            myReviewLike = MyReviewLike.builder()
+                    .reviewWriter(reviewInfo.getUserId())
+                    .productClass(reviewInfo.getProductClass())
+                    .reviewArticleCd(reviewInfo.getReviewArticleCd())
+                    .userId(userId)
+                    .build();
+
+            userReviewLikeRepository.save(myReviewLike);
+
+            if (productClass.equals(ProductClass.HALL.getClassName())) {
+                log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: Hall Review Count +1");
+                reviewHallInfo = hallRepository.findByReviewCD(myReviewLike.getReviewArticleCd())
+                        .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
+                reviewHallInfo.setFavoriteCount(reviewHallInfo.getFavoriteCount() + 1);
+            } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {
+                log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGE Review Count +1");
+            } else if (productClass.equals(ProductClass.GIFT.getClassName())){
+                log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGIFTGE Review Count +1");
+            }
+
+            return false;
         }
     }
 
