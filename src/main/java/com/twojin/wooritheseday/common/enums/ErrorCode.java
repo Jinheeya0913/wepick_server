@@ -87,6 +87,8 @@ public enum ErrorCode {
 
     PRODUCT_SELECT_FAIL(200, "P001", "조회 중 오류가 발생하였습니다. 다시 시도 바랍니다."),
 
+    PRODUCT_SELECT_NO_RESULT(200, "P002", "조회 결과가 없습니다. 다시 시도 바랍니다."),
+
 
     /**
      * * HTTP Status Code

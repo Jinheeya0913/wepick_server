@@ -22,7 +22,7 @@ public class HallDTO {
     // 외래키 설정
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "place_cd" , referencedColumnName = "place_cd")
-    private PlaceDTO placeCd;
+    private PlaceDTO placeDTO;
 
     private String hallNm;
 

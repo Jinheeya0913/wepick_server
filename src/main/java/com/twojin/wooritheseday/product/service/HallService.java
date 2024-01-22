@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface HallService {
 
-    List<HallDTO> selectPlaceDTOList();
+    List<HallDTO> selectPlaceDTOListByPlaceCd(Long productCd);
 }
