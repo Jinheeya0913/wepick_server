@@ -1,6 +1,8 @@
 package com.twojin.wooritheseday.article.controller;
 
 import com.twojin.wooritheseday.article.vo.ReviewListRespVO;
+import com.twojin.wooritheseday.common.utils.JsonConvertModules;
+import com.twojin.wooritheseday.product.vo.ReviewCommonVO;
 import org.apache.commons.lang3.StringUtils;
 import com.twojin.wooritheseday.article.entity.ReviewMasterDTO;
 import com.twojin.wooritheseday.article.service.ReviewService;
@@ -60,6 +62,27 @@ public class ReviewController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @RequestMapping("getReviewInfoByReviewCd")
+    public ResponseEntity<ApiResponse> getReviewInfoByReviewCd(@RequestBody ReviewMasterDTO reviewMasterDTO) {
+        log.debug("[ReviewController] >> getReviewInfoByReviewCd :: START");
+        ApiResponse apiResponse = null;
+
+        try {
+            ReviewCommonVO result = reviewService.getReviewInfoByReviewCd(reviewMasterDTO.getReviewArticleCd());
+
+            if (result != null) {
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(JsonConvertModules.dtoToJsonObj(result));
+            } else {
+                throw new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE);
+            }
+
+        } catch (Exception e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        }
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @RequestMapping(value = "writeReviewHall", consumes = "multipart/form-data")
     public ResponseEntity<ApiResponse> writeReview(@RequestHeader(AuthConstants.ACCESS_HEADER) String accessHeader
             , @RequestParam("data") String data, @RequestParam("images") List<MultipartFile> images) {
@@ -85,7 +108,6 @@ public class ReviewController {
 
 
     /**
-     *
      * @param accessHeader
      * @param reviewInfo
      * @return resultData : True 증가 / False 감소
@@ -94,7 +116,7 @@ public class ReviewController {
     public ResponseEntity<ApiResponse> upDownReviewLike(@RequestHeader(AuthConstants.ACCESS_HEADER) String accessHeader
             , @RequestBody ReviewMasterDTO reviewInfo) {
         log.debug("[ReviewController] >> upDownReviewLike :: START");
-        
+
         String userId = TokenUtil.getUserIdFromHeader(accessHeader);
         ApiResponse apiResponse = null;
 

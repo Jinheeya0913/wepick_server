@@ -77,6 +77,29 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public ReviewCommonVO getReviewInfoByReviewCd(Long reviewCd) {
+        log.debug("[ReviewServiceImpl] >> getReviewInfoByReviewCd :: START");
+        ReviewCommonVO reviewCommonVO =  null;
+        ReviewMasterDTO reviewMasterDTO = masterRepository.findByReviewArticleCd(reviewCd)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
+
+        ProductClass productClass = reviewMasterDTO.getProductClass();
+
+
+        if (productClass.equals(ProductClass.HALL)) {
+            log.debug("[ReviewServiceImpl] >> getReviewInfoByReviewCd :: GET HALL INFO");
+            reviewCommonVO = hallRepository.findByReviewArticleCd(reviewMasterDTO.getReviewArticleCd())
+                    .orElse(null);
+        } else if (productClass.equals(ProductClass.PACKAGE)){
+            log.debug("[ReviewServiceImpl] >> getReviewInfoByReviewCd :: GET PACKAGE INFO");
+        } else {
+            log.debug("[ReviewServiceImpl] >> getReviewInfoByReviewCd :: GET GIFT INFO");
+        }
+
+        return reviewCommonVO;
+    }
+
+    @Override
     @Transactional
     public ReviewMasterDTO writeReviewHall(String data, List<MultipartFile> images, String userId) {
         log.debug("[ReviewServiceImpl] >> writeReviewHall :: START");
@@ -200,7 +223,7 @@ public class ReviewServiceImpl implements ReviewService {
                         .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
 
                 // REVIEW LIKE -1
-                reviewHallInfo.setFavoriteCount(reviewHallInfo.getFavoriteCount() - 1);
+                reviewHallInfo.setThumbCount(reviewHallInfo.getThumbCount() - 1);
                 hallRepository.save(reviewHallInfo);
             } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGE Review Count -1");
@@ -226,7 +249,7 @@ public class ReviewServiceImpl implements ReviewService {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: Hall Review Count +1");
                 ReviewHallDTO reviewHallInfo = hallRepository.findByReviewArticleCd(myReviewLike.getReviewArticleCd())
                         .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
-                reviewHallInfo.setFavoriteCount(reviewHallInfo.getFavoriteCount() + 1);
+                reviewHallInfo.setThumbCount(reviewHallInfo.getThumbCount() + 1);
             } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGE Review Count +1");
             } else if (productClass.equals(ProductClass.GIFT.getClassName())) {
