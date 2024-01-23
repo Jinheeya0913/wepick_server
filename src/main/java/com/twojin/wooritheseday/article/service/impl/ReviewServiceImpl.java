@@ -15,7 +15,7 @@ import com.twojin.wooritheseday.file.dto.ReviewImgEntity;
 import com.twojin.wooritheseday.file.repository.ReviewImgInfoRepository;
 import com.twojin.wooritheseday.product.entity.PlaceDTO;
 import com.twojin.wooritheseday.product.vo.ReviewCommonVO;
-import com.twojin.wooritheseday.user.entity.MyReviewLike;
+import com.twojin.wooritheseday.user.entity.MyReviewLikeDTO;
 import com.twojin.wooritheseday.user.repository.UserReviewLikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,16 +210,16 @@ public class ReviewServiceImpl implements ReviewService {
 
         String productClass = reviewInfo.getProductClass().getClassName();
 
-        MyReviewLike myReviewLike = userReviewLikeRepository.findByUserIdAndReviewArticleCd(userId, reviewInfo.getReviewArticleCd())
+        MyReviewLikeDTO myReviewLikeDTO = userReviewLikeRepository.findByUserIdAndReviewArticleCd(userId, reviewInfo.getReviewArticleCd())
                 .orElse(null);
 
         // 좋아요 기록이 있으면 삭제 및 카운터 -1
-        if (myReviewLike != null) {
+        if (myReviewLikeDTO != null) {
             log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: Delete Like!");
-            userReviewLikeRepository.delete(myReviewLike);
+            userReviewLikeRepository.delete(myReviewLikeDTO);
             if (productClass.equals(ProductClass.HALL.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: Hall Review Count -1");
-                ReviewHallDTO reviewHallInfo = hallRepository.findByReviewArticleCd(myReviewLike.getReviewArticleCd())
+                ReviewHallDTO reviewHallInfo = hallRepository.findByReviewArticleCd(myReviewLikeDTO.getReviewArticleCd())
                         .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
 
                 // REVIEW LIKE -1
@@ -236,18 +236,18 @@ public class ReviewServiceImpl implements ReviewService {
             // 좋아요 기록이 없으면 새로 만들어줌
             log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: New Like!");
 
-            myReviewLike = MyReviewLike.builder()
+            myReviewLikeDTO = MyReviewLikeDTO.builder()
                     .reviewWriter(reviewInfo.getUserId())
                     .productClass(reviewInfo.getProductClass())
                     .reviewArticleCd(reviewInfo.getReviewArticleCd())
                     .userId(userId)
                     .build();
 
-            userReviewLikeRepository.save(myReviewLike);
+            userReviewLikeRepository.save(myReviewLikeDTO);
 
             if (productClass.equals(ProductClass.HALL.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: Hall Review Count +1");
-                ReviewHallDTO reviewHallInfo = hallRepository.findByReviewArticleCd(myReviewLike.getReviewArticleCd())
+                ReviewHallDTO reviewHallInfo = hallRepository.findByReviewArticleCd(myReviewLikeDTO.getReviewArticleCd())
                         .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
                 reviewHallInfo.setThumbCount(reviewHallInfo.getThumbCount() + 1);
             } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {

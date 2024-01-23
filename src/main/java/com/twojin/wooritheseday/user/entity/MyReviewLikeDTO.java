@@ -1,7 +1,6 @@
 package com.twojin.wooritheseday.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.twojin.wooritheseday.article.entity.ReviewMasterDTO;
 import com.twojin.wooritheseday.common.enums.ProductClass;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +14,7 @@ import java.util.Date;
 @Table(name = "woori_user_review_like")
 @Data
 @NoArgsConstructor
-public class MyReviewLike {
+public class MyReviewLikeDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -35,7 +34,7 @@ public class MyReviewLike {
     private Date regDate;
 
     @Builder
-    public MyReviewLike(Long rLikeCd, Long reviewArticleCd, String reviewWriter, String userId, ProductClass productClass, Date regDate) {
+    public MyReviewLikeDTO(Long rLikeCd, Long reviewArticleCd, String reviewWriter, String userId, ProductClass productClass, Date regDate) {
         this.rLikeCd = rLikeCd;
         this.reviewArticleCd = reviewArticleCd;
         this.reviewWriter = reviewWriter;
