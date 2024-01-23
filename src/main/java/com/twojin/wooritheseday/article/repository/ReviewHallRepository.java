@@ -16,7 +16,7 @@ public interface ReviewHallRepository extends JpaRepository<ReviewHallDTO, Long>
 
     Optional<List<ReviewHallDTO>> findByUseAtOrderByRegistDtDesc(boolean useAt);
 
-    Optional<ReviewHallDTO> findByReviewCD(Long reviewCd);
+    Optional<ReviewHallDTO> findByReviewArticleCd(Long reviewArticleCd);
 
 
 }

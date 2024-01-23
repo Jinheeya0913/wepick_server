@@ -52,9 +52,9 @@ public class ReviewMasterDTO  {
         this.updateDt = updateDt;
     }
 
-    public ReviewMasterDTO createNewDto(Long reviewCd, String userId, ProductClass productClass ) {
+    public ReviewMasterDTO createNewDto(Long reviewArticleCd, String userId, ProductClass productClass ) {
         return ReviewMasterDTO.builder()
-                .reviewArticleCd(reviewCd)
+                .reviewArticleCd(reviewArticleCd)
                 .userId(userId)
                 .useAt(true)
                 .productClass(productClass)

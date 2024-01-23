@@ -32,7 +32,6 @@ import java.util.Map;
 public class ReviewServiceImpl implements ReviewService {
 
 
-
     @Autowired
     ReviewHallRepository hallRepository;
 
@@ -55,19 +54,19 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewListRespVO respVO = new ReviewListRespVO();
 
         if (productClass.equals(ProductClass.HALL.getClassName())) {
-            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: "+ProductClass.HALL);
-             List<ReviewHallDTO> reviewHallDTOList = hallRepository.findByUseAtOrderByRegistDtDesc(true)
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: " + ProductClass.HALL);
+            List<ReviewHallDTO> reviewHallDTOList = hallRepository.findByUseAtOrderByRegistDtDesc(true)
                     .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
             resultList = new ArrayList<>(reviewHallDTOList);
         } else if (productClass.equals(ProductClass.GIFT.getClassName())) {
-            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: "+ProductClass.GIFT);
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: " + ProductClass.GIFT);
             // 작성 예정
         } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {
-            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: "+ProductClass.PACKAGE);
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: " + ProductClass.PACKAGE);
             // 작성 예정
         } else if (productClass.equals(ProductClass.ALL.getClassName())) {
-            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: "+ProductClass.PACKAGE);
-        } else  {
+            log.debug("[ReviewServiceImpl] >> selectReviewListByProductClass :: " + ProductClass.PACKAGE);
+        } else {
             throw new BusinessExceptionHandler(ErrorCode.MISSING_REQUEST_PARAMETER_ERROR.getMessage(), ErrorCode.MISSING_REQUEST_PARAMETER_ERROR);
         }
 
@@ -102,7 +101,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         String folderPath = "reviewHallImgs";
         List<String> fileNameList = new ArrayList<String>();
-        List<String> saveNameList = new ArrayList<String >();
+        List<String> saveNameList = new ArrayList<String>();
         ReviewImgEntity fileVo;
 
         try {
@@ -159,7 +158,7 @@ public class ReviewServiceImpl implements ReviewService {
             ReviewHallDTO hallResult = hallRepository.save(reviewHallDTO);
 
             ReviewMasterDTO reviewMasterDTO = new ReviewMasterDTO();
-            reviewMasterDTO = reviewMasterDTO.createNewDto(hallResult.getReviewCD(), hallResult.getUserId(), productClass);
+            reviewMasterDTO = reviewMasterDTO.createNewDto(hallResult.getReviewArticleCd(), hallResult.getUserId(), productClass);
 
 
             log.debug("[ReviewServiceImpl] >> writeReviewHall :: reviewMasterDTO.toString 저장 수행" + reviewMasterDTO.toString());
@@ -175,7 +174,6 @@ public class ReviewServiceImpl implements ReviewService {
 
 
     /**
-     *
      * @param reviewInfo
      * @param userId
      * @return true : thumb up / false : thumb down
@@ -184,31 +182,37 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public boolean thumbUpDownReviewLike(ReviewMasterDTO reviewInfo, String userId) {
         log.debug("[ReviewServiceImpl] >> thumbUpReviewLike :: START");
+        log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: reviewInfo.toString" + reviewInfo.toString());
 
-        String  productClass = reviewInfo.getProductClass().getClassName();
+
+        String productClass = reviewInfo.getProductClass().getClassName();
 
         MyReviewLike myReviewLike = userReviewLikeRepository.findByUserIdAndReviewArticleCd(userId, reviewInfo.getReviewArticleCd())
                 .orElse(null);
 
-        ReviewHallDTO reviewHallInfo = null;
-
-
+        // 좋아요 기록이 있으면 삭제 및 카운터 -1
         if (myReviewLike != null) {
+            log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: Delete Like!");
             userReviewLikeRepository.delete(myReviewLike);
             if (productClass.equals(ProductClass.HALL.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: Hall Review Count -1");
-                reviewHallInfo = hallRepository.findByReviewCD(myReviewLike.getReviewArticleCd())
+                ReviewHallDTO reviewHallInfo = hallRepository.findByReviewArticleCd(myReviewLike.getReviewArticleCd())
                         .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
-                reviewHallInfo.setFavoriteCount(reviewHallInfo.getFavoriteCount()-1);
+
+                // REVIEW LIKE -1
+                reviewHallInfo.setFavoriteCount(reviewHallInfo.getFavoriteCount() - 1);
                 hallRepository.save(reviewHallInfo);
             } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGE Review Count -1");
-            } else if (productClass.equals(ProductClass.GIFT.getClassName())){
+            } else if (productClass.equals(ProductClass.GIFT.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGIFTGE Review Count -1");
             }
 
             return true;
         } else {
+            // 좋아요 기록이 없으면 새로 만들어줌
+            log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: New Like!");
+
             myReviewLike = MyReviewLike.builder()
                     .reviewWriter(reviewInfo.getUserId())
                     .productClass(reviewInfo.getProductClass())
@@ -220,12 +224,12 @@ public class ReviewServiceImpl implements ReviewService {
 
             if (productClass.equals(ProductClass.HALL.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: Hall Review Count +1");
-                reviewHallInfo = hallRepository.findByReviewCD(myReviewLike.getReviewArticleCd())
+                ReviewHallDTO reviewHallInfo = hallRepository.findByReviewArticleCd(myReviewLike.getReviewArticleCd())
                         .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REVIEW_SELECT_LIST_FAILE.getMessage(), ErrorCode.REVIEW_SELECT_LIST_FAILE));
                 reviewHallInfo.setFavoriteCount(reviewHallInfo.getFavoriteCount() + 1);
             } else if (productClass.equals(ProductClass.PACKAGE.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGE Review Count +1");
-            } else if (productClass.equals(ProductClass.GIFT.getClassName())){
+            } else if (productClass.equals(ProductClass.GIFT.getClassName())) {
                 log.debug("[ReviewServiceImpl] >> thumbUpDownReviewLike :: PACKAGIFTGE Review Count +1");
             }
 

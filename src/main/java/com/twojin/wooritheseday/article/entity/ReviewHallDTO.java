@@ -22,7 +22,7 @@ public class ReviewHallDTO extends ReviewCommonVO {
     @Column(name = "review_cd")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ARTICLE")
     @SequenceGenerator(name = "SEQ_ARTICLE", sequenceName = "SEQ_ARTICLE", allocationSize = 1)
-    private Long reviewCD;
+    private Long reviewArticleCd;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="place_cd",referencedColumnName = "place_cd")
@@ -38,8 +38,8 @@ public class ReviewHallDTO extends ReviewCommonVO {
 
     protected double visitorRating;
 
-    public ReviewHallDTO(Long reviewCD, PlaceDTO placeInfo, double transRating, double banquetRating, double serviceRating, double visitorRating) {
-        this.reviewCD = reviewCD;
+    public ReviewHallDTO(Long reviewArticleCd, PlaceDTO placeInfo, double transRating, double banquetRating, double serviceRating, double visitorRating) {
+        this.reviewArticleCd = reviewArticleCd;
         this.placeInfo = placeInfo;
         this.transRating = transRating;
         this.banquetRating = banquetRating;
@@ -48,8 +48,8 @@ public class ReviewHallDTO extends ReviewCommonVO {
     }
 
     @Builder
-    public ReviewHallDTO(Long reviewCD, PlaceDTO placeInfo, String hallNm, double transRating, double banquetRating, double serviceRating, double visitorRating) {
-        this.reviewCD = reviewCD;
+    public ReviewHallDTO(Long reviewArticleCd, PlaceDTO placeInfo, String hallNm, double transRating, double banquetRating, double serviceRating, double visitorRating) {
+        this.reviewArticleCd = reviewArticleCd;
         this.placeInfo = placeInfo;
         this.hallNm = hallNm;
         this.transRating = transRating;
@@ -58,9 +58,9 @@ public class ReviewHallDTO extends ReviewCommonVO {
         this.visitorRating = visitorRating;
     }
 
-    public ReviewHallDTO(String userId, String reviewTitle, String reviewContents, boolean useAt, int openCount, int favoriteCount, int thumbCount, List<String> reviewImages, Date registDt, Date updateDt, Long reviewCD, PlaceDTO placeInfo, String hallNm, double transRating, double banquetRating, double serviceRating, double visitorRating) {
+    public ReviewHallDTO(String userId, String reviewTitle, String reviewContents, boolean useAt, int openCount, int favoriteCount, int thumbCount, List<String> reviewImages, Date registDt, Date updateDt, Long reviewArticleCd, PlaceDTO placeInfo, String hallNm, double transRating, double banquetRating, double serviceRating, double visitorRating) {
         super(userId, reviewTitle, reviewContents, useAt, openCount, favoriteCount, thumbCount, reviewImages, registDt, updateDt);
-        this.reviewCD = reviewCD;
+        this.reviewArticleCd = reviewArticleCd;
         this.placeInfo = placeInfo;
         this.hallNm = hallNm;
         this.transRating = transRating;
@@ -72,7 +72,7 @@ public class ReviewHallDTO extends ReviewCommonVO {
     @Override
     public String toString() {
         return "ReviewHallDTO{" +
-                "reviewCD=" + reviewCD +
+                "reviewArticleCd=" + reviewArticleCd +
                 ", transRating=" + transRating +
                 ", banquetRating=" + banquetRating +
                 ", serviceRating=" + serviceRating +

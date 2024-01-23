@@ -27,18 +27,15 @@ public class ReviewController {
     ReviewService reviewService;
 
     /**
-     *
      * @param
      * @return
      */
     @RequestMapping("selectReviewList")
-    public ResponseEntity<ApiResponse> selectReviewList(@RequestBody Map<String,String>  requestMap) {
-
+    public ResponseEntity<ApiResponse> selectReviewList(@RequestBody Map<String, String> requestMap) {
 
 
         log.debug("[ReviewController] >> selectReviewList :: START");
         log.debug("[ReviewController] >> selectReviewList :: productClass :  " + requestMap.get("productClass"));
-
 
 
         ApiResponse apiResponse = null;
@@ -83,6 +80,37 @@ public class ReviewController {
         } catch (Exception e) {
             apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
         }
+        return ResponseEntity.ok(apiResponse);
+    }
+
+
+    /**
+     *
+     * @param accessHeader
+     * @param reviewInfo
+     * @return resultData : True 증가 / False 감소
+     */
+    @RequestMapping("upDownReviewLike")
+    public ResponseEntity<ApiResponse> upDownReviewLike(@RequestHeader(AuthConstants.ACCESS_HEADER) String accessHeader
+            , @RequestBody ReviewMasterDTO reviewInfo) {
+        log.debug("[ReviewController] >> upDownReviewLike :: START");
+        
+        String userId = TokenUtil.getUserIdFromHeader(accessHeader);
+        ApiResponse apiResponse = null;
+
+
+        try {
+            boolean result = reviewService.thumbUpDownReviewLike(reviewInfo, userId);
+            if (result) {
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(true);
+            } else {
+                apiResponse = ApiResponse.createSuccessApiResponseWithObj(false);
+            }
+
+        } catch (Exception e) {
+            apiResponse = ApiResponse.createFailApiResponseAutoWithException(e);
+        }
+
         return ResponseEntity.ok(apiResponse);
     }
 
