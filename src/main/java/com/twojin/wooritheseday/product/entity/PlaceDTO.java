@@ -21,7 +21,8 @@ import java.util.Date;
 public class PlaceDTO {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PRODUCT")
+    @SequenceGenerator(name = "SEQ_PRODUCT", sequenceName = "SEQ_PRODUCT", allocationSize = 1)
     @Column(name = "place_cd")
     protected Long placeCd;
 
